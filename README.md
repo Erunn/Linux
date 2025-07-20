@@ -23,11 +23,14 @@ Thunderbolt (TM) 3 - > Disabled
 -------------
 Software to Install
 -------------
-**Throttled:** https://github.com/erpalma/throttled  
+**python-validity:** https://github.com/uunicorn/python-validity
+**throttled:** https://github.com/erpalma/throttled  
 **TLP:** https://linrunner.de/tlp/index.html
 
 
-```yay -S throttled tlp tlp-rdw tlpui```
+```yay -S python-validity throttled tlp tlp-rdw tlpui```
 
 ```sudo systemctl enable --now throttled.service```
+
+```fprintd-enroll```
 
