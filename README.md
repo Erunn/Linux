@@ -23,7 +23,7 @@ Thunderbolt (TM) 3 - > Disabled
 -------------
 Software to Install
 -------------
-**python-validity:** https://github.com/uunicorn/python-validity
+**python-validity:** https://github.com/uunicorn/python-validity  
 **throttled:** https://github.com/erpalma/throttled  
 **TLP:** https://linrunner.de/tlp/index.html
 
