@@ -28,7 +28,7 @@ Software to Install
 **TLP:** https://linrunner.de/tlp/index.html
 
 
-```yay -S python-validity throttled tlp tlp-rdw tlpui```
+```yay -S intel-media-driver python-validity throttled tlp tlp-rdw tlpui```
 
 ```sudo systemctl enable --now throttled.service```
 
