@@ -24,12 +24,13 @@ Thunderbolt (TM) 3 - > Disabled
 Software to Install
 -------------
 
+**intel-ucode:** https://wiki.archlinux.org/title/Microcode  
 **python-validity:** https://github.com/uunicorn/python-validity  
 **throttled:** https://github.com/erpalma/throttled  
 **TLP:** https://linrunner.de/tlp/index.html
 
 ```
-yay -S intel-media-driver python-validity throttled tlp tlp-rdw tlpui
+yay -S intel-media-driver intel-ucode python-validity throttled tlp tlp-rdw tlpui
 ```
 
 -------------
