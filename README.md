@@ -32,14 +32,6 @@ Software to Install
 yay -S intel-media-driver python-validity throttled tlp tlp-rdw tlpui
 ```
 
-```
-sudo systemctl enable --now throttled.service
-```
-
-```
-fprintd-enroll
-```
-
 -------------
 Analyzing the boot proces
 -------------
@@ -68,3 +60,16 @@ You can check log files for system errors as well:
 ```
 sudo journalctl -p 3 -xb
 ```
+
+-------------
+Taming the journal's size
+-------------
+
+Systemd's system journal's size can go out of control. There are some things you can do to keep it in control:
+
+```
+sudo journalctl --vacuum-size=100M
+sudo journalctl --vacuum-time=2weeks
+```
+
+-------------
