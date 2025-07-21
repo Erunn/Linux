@@ -74,3 +74,8 @@ sudo journalctl --vacuum-time=2weeks
 ```
 
 -------------
+Check SSD trim
+-------------
+```
+sudo systemctl status fstrim.timer
+```
