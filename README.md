@@ -50,6 +50,15 @@ yay -S bluez intel-media-driver intel-ucode python-validity throttled timeshift 
 > [!IMPORTANT]
 > Please refer to documentation to check any necessary following commands that are required to enable and start services.
 -------------
+Fonts to Install
+-------------
+**Inter:** https://github.com/rsms/inter  
+**IBM Plex® typeface:** https://github.com/IBM/plex
+
+```
+yay -S inter-font ttf-ibm-plex
+```
+
 System Maintenance
 -------------
 This command will update system and force refresh databases, remove orphaned packages and their unused dependencies, and clean package cache, keeping only installed packages:
