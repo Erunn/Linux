@@ -40,12 +40,15 @@ You can now use `yay` to install the following software:
 **intel-ucode:** https://wiki.archlinux.org/title/Microcode  
 **python-validity:** https://github.com/uunicorn/python-validity  
 **throttled:** https://github.com/erpalma/throttled  
-**TLP:** https://linrunner.de/tlp/index.html
+**timeshift:** https://github.com/linuxmint/timeshift  
+**TLP:** https://linrunner.de/tlp/index.html  
+**TLPUI:** https://github.com/d4nj1/TLPUI  
 
 ```
-yay -S bluez intel-media-driver intel-ucode python-validity throttled tlp tlp-rdw tlpui
+yay -S bluez intel-media-driver intel-ucode python-validity throttled timeshift tlp tlp-rdw tlpui
 ```
-
+> [!IMPORTANT]
+> Please refer to documentation to check any necessary following commands that are required to enable and start services.
 -------------
 System Maintenance
 -------------
@@ -109,3 +112,15 @@ Current power consumption or charge rate
 ```
 cat /sys/class/power_supply/BAT0/power_now | awk '{print $1 / 1000000 " W"}'
 ```
+
+-------------
+Keeping the boot output minimal.
+-------------
+**Reference:** https://wiki.archlinux.org/title/Kernel_parameters  
+
+Doing this will suppresses most kernel messages from being displayed on the console during boot.  
+This results in a cleaner, less verbose boot process, since only messages with a priority level of 3 (errors) or higher will be printed to the console.
+
+Go to  `/efi/loader/entries/` and add `rw quiet splash loglevel=3` at the end of your .conf file.
+
+
