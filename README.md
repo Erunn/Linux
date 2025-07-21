@@ -28,17 +28,43 @@ Software to Install
 **throttled:** https://github.com/erpalma/throttled  
 **TLP:** https://linrunner.de/tlp/index.html
 
+```
+yay -S intel-media-driver python-validity throttled tlp tlp-rdw tlpui
+```
 
-```yay -S intel-media-driver python-validity throttled tlp tlp-rdw tlpui```
+```
+sudo systemctl enable --now throttled.service
+```
 
-```sudo systemctl enable --now throttled.service```
-
-```fprintd-enroll```
+```
+fprintd-enroll
+```
 
 -------------
 Analyzing the boot proces
 -------------
 
-sudo systemd-analyze  
-sudo systemd-analyze blame  
-sudo systemd-analyze critical-chain  
+```
+sudo systemd-analyze
+```
+
+```
+sudo systemd-analyze blame
+```
+
+```
+sudo systemd-analyze critical-chain
+```
+
+-------------
+Check The System For Errors
+-------------
+System service errors are common and should be checked frequently to know what is broken and needs fixing:
+
+```
+sudo systemctl --failed
+```
+You can check log files for system errors as well:
+```
+sudo journalctl -p 3 -xb
+```
