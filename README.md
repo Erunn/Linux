@@ -79,3 +79,9 @@ Check SSD trim
 ```
 sudo systemctl status fstrim.timer
 ```
+-------------
+Current power consumption or charge rate
+-------------
+```
+cat /sys/class/power_supply/BAT0/power_now | awk '{print $1 / 1000000 " W"}'
+```
