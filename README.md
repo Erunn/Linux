@@ -21,6 +21,14 @@ Smart Card Slot - > Disabled
 Thunderbolt (TM) 3 - > Disabled  
 
 -------------
+Software to Uninstall on Mint
+-------------
+
+```
+sudo apt purge hypnotix
+```
+
+-------------
 Software to Install
 -------------
 `yay` (Yet Another Yogurt) is a popular and widely used AUR helper for Arch Linux.  
