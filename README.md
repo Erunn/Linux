@@ -25,7 +25,7 @@ Software to Uninstall on Mint
 -------------
 
 ```
-sudo apt purge hypnotix
+sudo apt purge hypnotix celluloid
 ```
 
 -------------
