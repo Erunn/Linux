@@ -69,7 +69,10 @@ yay -Syyu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
 ```
 sudo pacman -Syyu && sudo pacman -Rns $(pacman -Qdtq) && sudo pacman -Sc
 ```
--------------
+```
+sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt clean
+```
+
 Analyzing the boot proces
 -------------
 
