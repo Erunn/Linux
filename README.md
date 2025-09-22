@@ -25,7 +25,7 @@ Software to Uninstall on Mint
 -------------
 
 ```
-sudo apt purge hypnotix celluloid warpinator thunderbird transmission-gtk transmission-common casper rhythmbox pix
+sudo apt purge hypnotix celluloid warpinator thunderbird transmission-gtk transmission-common casper rhythmbox pix webapp-manager
 ```
 
 -------------
