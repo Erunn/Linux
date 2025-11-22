@@ -53,8 +53,9 @@ You can now use `yay` to install the following software:
 **TLPUI:** https://github.com/d4nj1/TLPUI  
 **qt5-tools:** https://archlinux.org/packages/extra/x86_64/qt5-tools/  
 **libnotify:** https://github.com/GNOME/libnotify  
+**qalculate:** https://qalculate.github.io/  
 ```
-yay -S bluez intel-media-driver intel-ucode python-validity throttled timeshift tlp tlp-rdw tlpui qt5-tools libnotify
+yay -S bluez intel-media-driver intel-ucode python-validity throttled timeshift tlp tlp-rdw tlpui qt5-tools libnotify qalculate-gtk
 ```
 > [!IMPORTANT]
 > Please refer to documentation to check any necessary following commands that are required to enable and start services.
