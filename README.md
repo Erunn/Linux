@@ -54,8 +54,9 @@ You can now use `yay` to install the following software:
 **qt5-tools:** https://archlinux.org/packages/extra/x86_64/qt5-tools/  
 **libnotify:** https://github.com/GNOME/libnotify  
 **qalculate:** https://qalculate.github.io/  
+**sddm-conf:** https://aur.archlinux.org/packages/sddm-conf-git  
 ```
-yay -S bluez intel-media-driver intel-ucode python-validity throttled timeshift tlp tlp-rdw tlpui qt5-tools libnotify qalculate-gtk
+yay -S bluez intel-media-driver intel-ucode python-validity throttled timeshift tlp tlp-rdw tlpui qt5-tools libnotify qalculate-gtk sddm-conf-git
 ```
 > [!IMPORTANT]
 > Please refer to documentation to check any necessary following commands that are required to enable and start services.
