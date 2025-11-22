@@ -127,10 +127,15 @@ Check SSD trim
 sudo systemctl status fstrim.timer
 ```
 -------------
-Current power consumption or charge rate
+Custom Command Widget - Battery stats
 -------------
 ```
-cat /sys/class/power_supply/BAT0/power_now | awk '{print $1 / 1000000 " W"}'
+sh -c '
+  perc=$(upower -b | awk "/percentage/ {print \$2}");
+  time=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | awk "/time/ {print \$4, \$5}");
+  watt=$(awk "{print \$1 / 1000000 \" W\"}" /sys/class/power_supply/BAT0/power_now);
+  echo "$perc | $time | $watt |"
+'
 ```
 
 -------------
