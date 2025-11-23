@@ -151,4 +151,4 @@ This results in a cleaner, less verbose boot process, since only messages with a
 
 Go to  `/efi/loader/entries/` and add `rw quiet splash loglevel=3` at the end of your .conf file.
 
-
+https://community.frame.work/t/tracking-linux-battery-life-tuning/6665
