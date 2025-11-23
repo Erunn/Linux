@@ -169,11 +169,11 @@ Sources
 
 For Xorg session:
 ```
-export MOZ_X11_EGL=1
+MOZ_X11_EGL=1
 ```
 For Wayland session:
 ```
-export MOZ_ENABLE_WAYLAND=1
+MOZ_ENABLE_WAYLAND=1
 ```
 
 **Firefox flags to set to true:**
