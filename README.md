@@ -176,7 +176,7 @@ Sources
 |------|-------|----------------|
 | `media.ffmpeg.vaapi.enabled` | true | Offloads video decoding to GPU, reducing CPU usage and saving battery during video playback. |
 | `media.hardware-video-decoding.enabled` | true | GPU-based video decoding consumes less power than CPU decoding, improving battery life. |
-| `media.hardware-video-decoding.force-enabled` | false | Avoids forcing GPU decoding on unsupported hardware, preventing extra CPU usage and wasted energy. |
+| `media.hardware-video-decoding.force-enabled` | true | Ensures GPU decoding is active on supported Intel hardware (VA-API), maximizing battery savings and minimizing CPU load during video playback. |
 
 ## 3. RDD / GPU Process
 | Flag | Value | Battery Benefit |
