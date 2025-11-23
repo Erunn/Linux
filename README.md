@@ -179,3 +179,42 @@ For Wayland session:
 export MOZ_ENABLE_WAYLAND=1
 ```
 
+**Firefox flags to set to true:**
+```
+media.ffmpeg.vaapi.enabled
+```
+```
+media.hardware-video-decoding.enabled
+```
+```
+media.rdd-ffmpeg.enabled
+```
+```
+media.ffvpx.enabled
+```
+```
+media.navigator.mediadatadecoder_vpx_enabled
+```
+```
+media.rdd-vpx.enabled
+```
+```
+widget.wayland-dmabuf-vaapi.enabled
+```
+```
+widget.wayland-dmabuf-webgl.enabled
+```
+```
+gfx.webrender.all
+```
+```
+media.navigator.mediadatadecoder_vpx_enabled
+```
+
+**Firefox flags to set to false:**
+```
+media.hardware-video-decoding.force-enabled
+```
+```
+media.av1.enabled
+```
