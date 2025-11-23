@@ -166,10 +166,7 @@ Sources
 **Sources:** https://community.frame.work/t/tracking-linux-battery-life-tuning/6665
 
 **Environment variables:**
-Diable RDD sandbox:
-```
-export MOZ_DISABLE_RDD_SANDBOX=1
-```
+
 For Xorg session:
 ```
 export MOZ_X11_EGL=1
@@ -180,6 +177,7 @@ export MOZ_ENABLE_WAYLAND=1
 ```
 
 **Firefox flags to set to true:**
+
 ```
 media.ffmpeg.vaapi.enabled
 ```
@@ -208,7 +206,7 @@ widget.wayland-dmabuf-webgl.enabled
 gfx.webrender.all
 ```
 ```
-media.navigator.mediadatadecoder_vpx_enabled
+media.ffmpeg.dmabuf-textures.enabled
 ```
 
 **Firefox flags to set to false:**
