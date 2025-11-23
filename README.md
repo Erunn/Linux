@@ -151,4 +151,31 @@ This results in a cleaner, less verbose boot process, since only messages with a
 
 Go to  `/efi/loader/entries/` and add `rw quiet splash loglevel=3` at the end of your .conf file.
 
-https://community.frame.work/t/tracking-linux-battery-life-tuning/6665
+-------------
+Firefox hardware acceleration 
+-------------
+Firefox hardware acceleration can help battery life in Linux in a few ways:
+
+- Offloading tasks to the GPU: Hardware acceleration allows Firefox to utilize the computer's graphics processing unit (GPU) for specific tasks like rendering web pages, decoding videos, and playing animations. GPUs are often more efficient at handling these tasks than the main processor (CPU). This offloading reduces the overall workload on the CPU, which may lead to lower power consumption and improved battery life.
+
+- Improved rendering efficiency: Modern GPUs are specifically designed to optimize graphics-intensive tasks. Hardware acceleration enables Firefox to leverage these optimizations, leading to faster and smoother rendering of web content. Efficient rendering may require less computational power from both the CPU and the GPU, potentially improving battery life.
+
+- Dedicated video decoding: GPUs often include specialized hardware for decoding video content, which can be significantly more power-efficient than software-based decoding on the CPU. By utilizing hardware acceleration, Firefox can offload video decoding to the GPU, potentially improving battery life during video playback.
+Sources
+
+Sources: https://community.frame.work/t/tracking-linux-battery-life-tuning/6665
+
+**Environment variables:**
+Diable RDD sandbox:
+```
+export MOZ_DISABLE_RDD_SANDBOX=1
+```
+For Xorg session:
+```
+export MOZ_X11_EGL=1
+```
+For Wayland session:
+```
+export MOZ_ENABLE_WAYLAND=1
+```
+
