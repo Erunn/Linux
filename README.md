@@ -163,7 +163,7 @@ Firefox hardware acceleration can help battery life in Linux in a few ways:
 - Dedicated video decoding: GPUs often include specialized hardware for decoding video content, which can be significantly more power-efficient than software-based decoding on the CPU. By utilizing hardware acceleration, Firefox can offload video decoding to the GPU, potentially improving battery life during video playback.
 Sources
 
-Sources: https://community.frame.work/t/tracking-linux-battery-life-tuning/6665
+**Sources:** https://community.frame.work/t/tracking-linux-battery-life-tuning/6665
 
 **Environment variables:**
 Diable RDD sandbox:
