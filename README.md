@@ -216,3 +216,56 @@ media.hardware-video-decoding.force-enabled
 ```
 media.av1.enabled
 ```
+
+# Firefox Hardware Acceleration & Battery-Friendly Settings
+
+This table lists recommended environment variables and Firefox flags that improve **performance** while saving **battery** on laptops.
+
+---
+
+## 1. Environment Variables
+| Setting | Value | Battery Benefit |
+|---------|-------|----------------|
+| `MOZ_X11_EGL` (Xorg) | ✅ `1` | Uses GPU for rendering instead of CPU, reducing CPU load and battery drain. |
+| `MOZ_ENABLE_WAYLAND` (Wayland) | ✅ `1` | Enables native Wayland rendering for more efficient GPU usage, lowering energy consumption. |
+
+## 2. Hardware Video Acceleration
+| Setting | Value | Battery Benefit |
+|---------|-------|----------------|
+| `media.ffmpeg.vaapi.enabled` | ✅ `true` | Offloads video decoding to GPU, reducing CPU usage and saving battery during video playback. |
+| `media.hardware-video-decoding.enabled` | ✅ `true` | GPU-based video decoding consumes less power than CPU decoding, improving battery life. |
+| `media.hardware-video-decoding.force-enabled` | ❌ `false` | Avoids forcing GPU decoding on unsupported hardware, preventing extra CPU usage and wasted energy. |
+
+## 3. RDD / GPU Process
+| Setting | Value | Battery Benefit |
+|---------|-------|----------------|
+| `media.rdd-ffmpeg.enabled` | ✅ `true` | Moves video decoding to GPU process, lowering CPU workload and power consumption. |
+| `media.rdd-vpx.enabled` | ✅ `true` | Uses GPU for VP8/VP9 decoding, reducing CPU cycles and battery usage. |
+
+## 4. VPX Codec (VP8/VP9)
+| Setting | Value | Battery Benefit |
+|---------|-------|----------------|
+| `media.ffvpx.enabled` | ✅ `true` | Software fallback avoids CPU spikes and inefficient processing, conserving battery. |
+| `media.navigator.mediadatadecoder_vpx_enabled` | ✅ `true` | Offloads VP8/VP9 decoding in video calls to GPU, reducing CPU power draw. |
+
+## 5. Wayland DMA Buffers
+| Setting | Value | Battery Benefit |
+|---------|-------|----------------|
+| `widget.wayland-dmabuf-vaapi.enabled` | ✅ `true` | Zero-copy video rendering reduces CPU/memory usage, saving battery. |
+| `widget.wayland-dmabuf-webgl.enabled` | ✅ `true` | Efficient WebGL rendering lowers CPU/GPU workload and power consumption. |
+
+## 6. WebRender
+| Setting | Value | Battery Benefit |
+|---------|-------|----------------|
+| `gfx.webrender.all` | ✅ `true` | GPU-accelerated page rendering reduces CPU cycles, lowering battery usage. |
+
+## 7. FFmpeg & DMA Buffers
+| Setting | Value | Battery Benefit |
+|---------|-------|----------------|
+| `media.ffmpeg.dmabuf-textures.enabled` | ✅ `true` | Zero-copy textures reduce CPU-intensive memory copying, conserving energy. |
+
+## 8. Video Codec Settings
+| Setting | Value | Battery Benefit |
+|---------|-------|----------------|
+| `media.av1.enabled` | ❌ `false` | AV1 decoding is CPU-heavy; disabling it reduces battery drain on devices without AV1 hardware acceleration. |
+
