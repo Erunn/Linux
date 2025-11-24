@@ -21,14 +21,6 @@ Smart Card Slot - > Disabled
 Thunderbolt (TM) 3 - > Disabled  
 
 -------------
-Software to Uninstall on Mint
--------------
-
-```
-sudo apt purge hypnotix celluloid warpinator thunderbird transmission-gtk transmission-common casper rhythmbox pix webapp-manager
-```
-
--------------
 Software to Install
 -------------
 `yay` (Yet Another Yogurt) is a popular and widely used AUR helper for Arch Linux.  
@@ -46,6 +38,7 @@ You can now use `yay` to install the following software:
 
 **bluez:** https://wiki.archlinux.org/title/Bluetooth  
 **intel-ucode:** https://wiki.archlinux.org/title/Microcode  
+**nm-tray:** https://github.com/palinek/nm-tray?tab=readme-ov-file  
 **python-validity:** https://github.com/uunicorn/python-validity  
 **throttled:** https://github.com/erpalma/throttled  
 **timeshift:** https://github.com/linuxmint/timeshift  
@@ -53,10 +46,9 @@ You can now use `yay` to install the following software:
 **TLPUI:** https://github.com/d4nj1/TLPUI  
 **qt5-tools:** https://archlinux.org/packages/extra/x86_64/qt5-tools/  
 **libnotify:** https://github.com/GNOME/libnotify  
-**qalculate:** https://qalculate.github.io/  
-**sddm-conf:** https://aur.archlinux.org/packages/sddm-conf-git  
+**qalculate:** https://qalculate.github.io/   
 ```
-yay -S bluez intel-media-driver intel-ucode python-validity throttled timeshift tlp tlp-rdw tlpui qt5-tools libnotify qalculate-gtk sddm-conf-git
+yay -S bluez intel-media-driver intel-ucode nm-tray-git python-validity throttled timeshift tlp tlp-rdw tlpui qt5-tools libnotify qalculate-gtk
 ```
 > [!IMPORTANT]
 > Please refer to documentation to check any necessary following commands that are required to enable and start services.
@@ -64,7 +56,6 @@ yay -S bluez intel-media-driver intel-ucode python-validity throttled timeshift 
 Fonts to Install
 -------------
 **Inter:** https://github.com/rsms/inter  
-**IBM Plex® typeface:** https://github.com/IBM/plex
 
 ```
 yay -S inter-font ttf-ibm-plex
@@ -79,9 +70,6 @@ yay -Syyu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
 ```
 ```
 sudo pacman -Syyu && sudo pacman -Rns $(pacman -Qdtq) && sudo pacman -Sc
-```
-```
-sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y && sudo apt clean
 ```
 
 Analyzing the boot proces
@@ -134,9 +122,11 @@ Custom Command Widget - Battery stats
 -------------
 ```
 sh -c '
-  perc=$(upower -b | awk "/percentage/ {print \$2}");
-  time=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | awk "/time/ {print \$4, \$5}");
-  watt=$(awk "{print \$1 / 1000000 \" W\"}" /sys/class/power_supply/BAT0/power_now);
+  BAT_SYS_PATH="/sys/class/power_supply/BAT0"
+  BAT_UPOWER_PATH="/org/freedesktop/UPower/devices/battery_BAT0"
+  watt=$(awk "{printf \"%.2f W\", \$1 / 1000000}" "$BAT_SYS_PATH/power_now")
+  perc=$(cat "$BAT_SYS_PATH/capacity")%
+  time=$(upower -i "$BAT_UPOWER_PATH" | awk "/time/ {print \$4, \$5}")
   echo "$perc | $time | $watt |"
 '
 ```
@@ -152,63 +142,9 @@ This results in a cleaner, less verbose boot process, since only messages with a
 Go to  `/efi/loader/entries/` and add `rw quiet splash loglevel=3` at the end of your .conf file.
 
 -------------
-Firefox hardware acceleration 
+Environment Variables
 -------------
-Firefox hardware acceleration can help battery life in Linux in a few ways:
-
-- Offloading tasks to the GPU: Hardware acceleration allows Firefox to utilize the computer's graphics processing unit (GPU) for specific tasks like rendering web pages, decoding videos, and playing animations. GPUs are often more efficient at handling these tasks than the main processor (CPU). This offloading reduces the overall workload on the CPU, which may lead to lower power consumption and improved battery life.
-
-- Improved rendering efficiency: Modern GPUs are specifically designed to optimize graphics-intensive tasks. Hardware acceleration enables Firefox to leverage these optimizations, leading to faster and smoother rendering of web content. Efficient rendering may require less computational power from both the CPU and the GPU, potentially improving battery life.
-
-- Dedicated video decoding: GPUs often include specialized hardware for decoding video content, which can be significantly more power-efficient than software-based decoding on the CPU. By utilizing hardware acceleration, Firefox can offload video decoding to the GPU, potentially improving battery life during video playback.
-Sources
-
-**Sources:** https://community.frame.work/t/tracking-linux-battery-life-tuning/6665
-
-## 1. Environment Variables
 | Variable | Value | Battery Benefit |
 |---------|-------|----------------|
 | `MOZ_X11_EGL` (Xorg) | 1 | Uses GPU for rendering instead of CPU, reducing CPU load and battery drain. |
 | `MOZ_ENABLE_WAYLAND` (Wayland) | 1 | Enables native Wayland rendering for more efficient GPU usage, lowering energy consumption. |
-
-## 2. Hardware Video Acceleration
-| Flag | Value | Battery Benefit |
-|------|-------|----------------|
-| `media.ffmpeg.vaapi.enabled` | true | Offloads video decoding to GPU, reducing CPU usage and saving battery during video playback. |
-| `media.hardware-video-decoding.enabled` | true | GPU-based video decoding consumes less power than CPU decoding, improving battery life. |
-| `media.hardware-video-decoding.force-enabled` | true | Ensures GPU decoding is active on supported Intel hardware (VA-API), maximizing battery savings and minimizing CPU load during video playback. |
-
-## 3. RDD / GPU Process
-| Flag | Value | Battery Benefit |
-|------|-------|----------------|
-| `media.rdd-ffmpeg.enabled` | true | Moves video decoding to GPU process, lowering CPU workload and power consumption. |
-| `media.rdd-vpx.enabled` | true | Uses GPU for VP8/VP9 decoding, reducing CPU cycles and battery usage. |
-
-## 4. VPX Codec (VP8/VP9)
-| Flag | Value | Battery Benefit |
-|------|-------|----------------|
-| `media.ffvpx.enabled` | true | Software fallback avoids CPU spikes and inefficient processing, conserving battery. |
-| `media.navigator.mediadatadecoder_vpx_enabled` | true | Offloads VP8/VP9 decoding in video calls to GPU, reducing CPU power draw. |
-
-## 5. Wayland DMA Buffers
-| Flag | Value | Battery Benefit |
-|------|-------|----------------|
-| `widget.wayland-dmabuf-vaapi.enabled` | true | Zero-copy video rendering reduces CPU/memory usage, saving battery. |
-| `widget.wayland-dmabuf-webgl.enabled` | true | Efficient WebGL rendering lowers CPU/GPU workload and power consumption. |
-
-## 6. WebRender
-| Flag | Value | Battery Benefit |
-|------|-------|----------------|
-| `gfx.webrender.all` | true | GPU-accelerated page rendering reduces CPU cycles, lowering battery usage. |
-
-## 7. FFmpeg & DMA Buffers
-| Flag | Value | Battery Benefit |
-|------|-------|----------------|
-| `media.ffmpeg.dmabuf-textures.enabled` | true | Zero-copy textures reduce CPU-intensive memory copying, conserving energy. |
-
-## 8. Video Codec Settings
-| Flag | Value | Battery Benefit |
-|------|-------|----------------|
-| `media.av1.enabled` | false | AV1 decoding is CPU-heavy; disabling it reduces battery drain on devices without AV1 hardware acceleration. |
-
-
