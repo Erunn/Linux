@@ -117,8 +117,14 @@ sudo journalctl --vacuum-time=2weeks
 ```
 
 -------------
-Check SSD trim
+Enable SSD trim
 -------------
+
+For optimal performance and longevity of your SSD, you should enable the fstrim.timer. This will ensure the TRIM command is run weekly, which tells your SSD which data blocks are no longer in use and can be erased.
+```
+sudo systemctl enable --now fstrim.timer
+```
+After running the previous command, check the status. It should show the timer is active and indicate the next time the service will run.
 ```
 sudo systemctl status fstrim.timer
 ```
