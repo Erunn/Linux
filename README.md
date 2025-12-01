@@ -53,7 +53,7 @@ You can now use `yay` to install the following software:
 **TLPUI:** https://github.com/d4nj1/TLPUI  
 
 ```
-yay -S bluez blueman gvfs-git intel-ucode intel-undervolt labwc-git labwc-tweaks-git libnotify lxqt-wayland-session-git nm-tray-git qalculate-qt-git qt5-tools stress-ng tlp-git tlp-rdw-git tlpui-git
+yay -S bluez blueman gvfs intel-ucode intel-undervolt labwc labwc-tweaks libnotify lxqt-wayland-session nm-tray qalculate-qt qt5-tools stress-ng tlp tlp-rdw tlpui
 ```
 > [!IMPORTANT]
 > Please refer to documentation to check any necessary following commands that are required to enable and start services.
