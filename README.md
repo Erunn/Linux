@@ -37,18 +37,20 @@ yay -Y --gendb
 You can now use `yay` to install the following software:
 
 **bluez:** https://wiki.archlinux.org/title/Bluetooth  
+**blueman:** https://github.com/blueman-project/blueman  
+**gvfs:** https://gitlab.gnome.org/GNOME/gvfs  
 **intel-ucode:** https://wiki.archlinux.org/title/Microcode  
-**nm-tray:** https://github.com/palinek/nm-tray?tab=readme-ov-file  
-**python-validity:** https://github.com/uunicorn/python-validity  
-**throttled:** https://github.com/erpalma/throttled  
-**timeshift:** https://github.com/linuxmint/timeshift  
+**intel-undervolt:** https://github.com/kitsunyan/intel-undervolt  
+**libnotify:** https://github.com/GNOME/libnotify  
+**nm-tray:** https://github.com/palinek/nm-tray   
+**qalculate:** https://qalculate.github.io/   
+**qt5-tools:** https://archlinux.org/packages/extra/x86_64/qt5-tools/  
+**stress-ng:** https://github.com/ColinIanKing/stress-ng  
 **TLP:** https://linrunner.de/tlp/index.html  
 **TLPUI:** https://github.com/d4nj1/TLPUI  
-**qt5-tools:** https://archlinux.org/packages/extra/x86_64/qt5-tools/  
-**libnotify:** https://github.com/GNOME/libnotify  
-**qalculate:** https://qalculate.github.io/   
+
 ```
-yay -S bluez intel-media-driver intel-ucode nm-tray-git python-validity throttled timeshift tlp tlp-rdw tlpui qt5-tools libnotify qalculate-gtk
+yay -S bluez blueman gvfs intel-ucode intel-undervolt libnotify nm-tray-git qalculate-qt qt5-tools stress-ng tlp tlp-rdw tlpui
 ```
 > [!IMPORTANT]
 > Please refer to documentation to check any necessary following commands that are required to enable and start services.
