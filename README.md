@@ -42,6 +42,7 @@ You can now use `yay` to install the following software:
 **intel-ucode:** https://wiki.archlinux.org/title/Microcode  
 **intel-undervolt:** https://github.com/kitsunyan/intel-undervolt  
 **libnotify:** https://github.com/GNOME/libnotify  
+**lxqt-wayland-session:** https://github.com/lxqt/lxqt-wayland-session  
 **nm-tray:** https://github.com/palinek/nm-tray   
 **qalculate:** https://qalculate.github.io/   
 **qt5-tools:** https://archlinux.org/packages/extra/x86_64/qt5-tools/  
@@ -50,7 +51,7 @@ You can now use `yay` to install the following software:
 **TLPUI:** https://github.com/d4nj1/TLPUI  
 
 ```
-yay -S bluez blueman gvfs intel-ucode intel-undervolt libnotify nm-tray-git qalculate-qt qt5-tools stress-ng tlp tlp-rdw tlpui
+yay -S bluez blueman gvfs intel-ucode intel-undervolt libnotify lxqt-wayland-session nm-tray-git qalculate-qt qt5-tools stress-ng tlp tlp-rdw tlpui
 ```
 > [!IMPORTANT]
 > Please refer to documentation to check any necessary following commands that are required to enable and start services.
