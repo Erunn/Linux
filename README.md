@@ -38,7 +38,8 @@ You can now use `yay` to install the following software:
 
 **bluez:** https://wiki.archlinux.org/title/Bluetooth  
 **blueman:** https://github.com/blueman-project/blueman  
-**featherpad:** https://github.com/tsujan/FeatherPad  
+**featherpad:** https://github.com/tsujan/FeatherPad 
+**fwupd:** https://github.com/fwupd/fwupd  
 **gvfs:** https://gitlab.gnome.org/GNOME/gvfs  
 **intel-ucode:** https://wiki.archlinux.org/title/Microcode  
 **intel-undervolt:** https://github.com/kitsunyan/intel-undervolt  
@@ -56,7 +57,7 @@ You can now use `yay` to install the following software:
 **wdisplays:** https://github.com/artizirk/wdisplays  
 
 ```
-yay -S bluez blueman featherpad gvfs intel-ucode intel-undervolt labwc labwc-tweaks libnotify lxqt-wayland-session nm-tray qalculate-qt qt5-declarative qt5-tools stress-ng tlp tlp-rdw tlpui wdisplays
+yay -S bluez blueman featherpad fwupd gvfs intel-ucode intel-undervolt labwc labwc-tweaks libnotify lxqt-wayland-session nm-tray qalculate-qt qt5-declarative qt5-tools stress-ng tlp tlp-rdw tlpui wdisplays
 ```
 > [!IMPORTANT]
 > Please refer to documentation to check any necessary following commands that are required to enable and start services.
