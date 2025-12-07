@@ -48,7 +48,7 @@ You can now use `yay` to install the following software:
 **lxqt-wayland-session:** https://github.com/lxqt/lxqt-wayland-session  
 **nm-tray:** https://github.com/palinek/nm-tray   
 **qalculate:** https://github.com/Qalculate/qalculate-qt  
-**qt5-declaraive:** https://archlinux.org/packages/extra/x86_64/qt5-declarative
+**qt5-declaraive:** https://archlinux.org/packages/extra/x86_64/qt5-declarative  
 **qt5-tools:** https://archlinux.org/packages/extra/x86_64/qt5-tools/  
 **stress-ng:** https://github.com/ColinIanKing/stress-ng  
 **TLP:** https://linrunner.de/tlp/index.html  
