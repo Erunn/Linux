@@ -38,6 +38,7 @@ You can now use `yay` to install the following software:
 
 **bluez:** https://wiki.archlinux.org/title/Bluetooth  
 **blueman:** https://github.com/blueman-project/blueman  
+**featherpad:** https://github.com/tsujan/FeatherPad  
 **gvfs:** https://gitlab.gnome.org/GNOME/gvfs  
 **intel-ucode:** https://wiki.archlinux.org/title/Microcode  
 **intel-undervolt:** https://github.com/kitsunyan/intel-undervolt  
@@ -47,13 +48,14 @@ You can now use `yay` to install the following software:
 **lxqt-wayland-session:** https://github.com/lxqt/lxqt-wayland-session  
 **nm-tray:** https://github.com/palinek/nm-tray   
 **qalculate:** https://github.com/Qalculate/qalculate-qt  
+**qt5-declaraive:** https://archlinux.org/packages/extra/x86_64/qt5-declarative
 **qt5-tools:** https://archlinux.org/packages/extra/x86_64/qt5-tools/  
 **stress-ng:** https://github.com/ColinIanKing/stress-ng  
 **TLP:** https://linrunner.de/tlp/index.html  
 **TLPUI:** https://github.com/d4nj1/TLPUI  
 
 ```
-yay -S bluez blueman gvfs intel-ucode intel-undervolt labwc labwc-tweaks libnotify lxqt-wayland-session nm-tray qalculate-qt qt5-tools stress-ng tlp tlp-rdw tlpui
+yay -S bluez blueman featherpad gvfs intel-ucode intel-undervolt labwc labwc-tweaks libnotify lxqt-wayland-session nm-tray qalculate-qt qt5-declarative qt5-tools stress-ng tlp tlp-rdw tlpui
 ```
 > [!IMPORTANT]
 > Please refer to documentation to check any necessary following commands that are required to enable and start services.
@@ -63,7 +65,7 @@ Fonts to Install
 **Inter:** https://github.com/rsms/inter  
 
 ```
-yay -S inter-font ttf-ibm-plex
+yay -S inter-font ttf
 ```
 
 System Maintenance
