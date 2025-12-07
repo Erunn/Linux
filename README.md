@@ -36,29 +36,28 @@ yay -Y --gendb
 ```
 You can now use `yay` to install the following software:
 
-**bluez:** https://wiki.archlinux.org/title/Bluetooth  
-**blueman:** https://github.com/blueman-project/blueman  
-**featherpad:** https://github.com/tsujan/FeatherPad 
-**fwupd:** https://github.com/fwupd/fwupd  
-**gvfs:** https://gitlab.gnome.org/GNOME/gvfs  
-**intel-ucode:** https://wiki.archlinux.org/title/Microcode  
-**intel-undervolt:** https://github.com/kitsunyan/intel-undervolt  
-**labwc:** https://github.com/labwc/labwc  
-**labwc-tweaks:** https://github.com/labwc/labwc-tweaks  
-**libnotify:** https://github.com/GNOME/libnotify  
-**lxqt-wayland-session:** https://github.com/lxqt/lxqt-wayland-session  
-**nm-tray:** https://github.com/palinek/nm-tray   
-**qalculate:** https://github.com/Qalculate/qalculate-qt  
-**qt5-declaraive:** https://archlinux.org/packages/extra/x86_64/qt5-declarative  
-**qt5-tools:** https://archlinux.org/packages/extra/x86_64/qt5-tools/  
-**stress-ng:** https://github.com/ColinIanKing/stress-ng  
-**TLP:** https://linrunner.de/tlp/index.html  
-**TLPUI:** https://github.com/d4nj1/TLPUI  
-**wdisplays:** https://github.com/artizirk/wdisplays  
+| Name | Description | Installation Command |
+| :--- | :--- | :--- |
+| **bluez** | The official **Linux Bluetooth protocol stack** (the core framework for wireless communication). | `yay -S bluez` |
+| **blueman** | A **GTK+ Bluetooth Manager** (GUI) that simplifies managing and pairing Bluetooth devices. | `yay -S blueman` |
+| **featherpad** | A **lightweight, independent Qt text editor** with minimal dependencies and syntax highlighting. | `yay -S featherpad` |
+| **fwupd** | A daemon to manage the installation of **firmware updates** (UEFI/Capsule) for connected hardware. | `yay -S fwupd` |
+| **gvfs** | The **GNOME Virtual File System** that provides access to remote filesystems (SFTP, FTP, SMB) and local devices. | `yay -S gvfs` |
+| **intel-ucode** | **Intel processor microcode updates** that provide critical bug fixes and security updates for the CPU. | `yay -S intel-ucode` |
+| **intel-undervolt** | A utility for **undervolting Intel CPUs** under Linux to reduce heat and improve power efficiency. | `yay -S intel-undervolt` |
+| **labwc** | A **minimalist window-stacking Wayland compositor** (inspired by Openbox). The core of the desktop. | `yay -S labwc` |
+| **labwc-tweaks** | A **Qt-based GUI configuration tool** for managing `labwc` settings and themes. | `yay -S labwc-tweaks` |
+| **libnotify** | A library for sending **desktop notifications** to a notification daemon. | `yay -S libnotify` |
+| **lxqt-wayland-session** | Provides the **necessary scripts and files** to launch an LXQt or compatible session under Wayland. | `yay -S lxqt-wayland-session` |
+| **nm-tray** | A simple **Qt-based NetworkManager frontend** that resides in the system tray for network access. | `yay -S nm-tray` |
+| **qalculate** | A versatile, cross-platform **desktop calculator** (Qt version) with symbolic calculation and unit conversion. | `yay -S qalculate-qt` |
+| **qt5-declarative** | Development files for **Qt 5's QML/declarative framework**, often a dependency for Qt-based apps. | `yay -S qt5-declarative` |
+| **qt5-tools** | A collection of **tools and utilities** that come with the Qt framework (e.g., Qt Assistant, Linguist). | `yay -S qt5-tools` |
+| **stress-ng** | A tool to **stress test** a computer system (CPU, memory, I/O) for stability and debugging. | `yay -S stress-ng` |
+| **TLP** | A feature-rich **command-line power management tool** for optimizing laptop battery life. | `yay -S tlp tlp-rdw` |
+| **TLPUI** | A **GTK graphical user interface** for easily configuring the TLP power management settings. | `yay -S tlpui` |
+| **wdisplays** | A **graphical utility** for configuring display outputs (resolution, position, rotation) on Wayland. | `yay -S wdisplays` |
 
-```
-yay -S bluez blueman featherpad fwupd gvfs intel-ucode intel-undervolt labwc labwc-tweaks libnotify lxqt-wayland-session nm-tray qalculate-qt qt5-declarative qt5-tools stress-ng tlp tlp-rdw tlpui wdisplays
-```
 > [!IMPORTANT]
 > Please refer to documentation to check any necessary following commands that are required to enable and start services.
 -------------
@@ -67,7 +66,7 @@ Fonts to Install
 **Inter:** https://github.com/rsms/inter  
 
 ```
-yay -S inter-font ttf
+yay -S inter-font
 ```
 
 System Maintenance
