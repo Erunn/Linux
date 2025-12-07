@@ -53,9 +53,10 @@ You can now use `yay` to install the following software:
 **stress-ng:** https://github.com/ColinIanKing/stress-ng  
 **TLP:** https://linrunner.de/tlp/index.html  
 **TLPUI:** https://github.com/d4nj1/TLPUI  
+**wdisplays:** https://github.com/artizirk/wdisplays  
 
 ```
-yay -S bluez blueman featherpad gvfs intel-ucode intel-undervolt labwc labwc-tweaks libnotify lxqt-wayland-session nm-tray qalculate-qt qt5-declarative qt5-tools stress-ng tlp tlp-rdw tlpui
+yay -S bluez blueman featherpad gvfs intel-ucode intel-undervolt labwc labwc-tweaks libnotify lxqt-wayland-session nm-tray qalculate-qt qt5-declarative qt5-tools stress-ng tlp tlp-rdw tlpui wdisplays
 ```
 > [!IMPORTANT]
 > Please refer to documentation to check any necessary following commands that are required to enable and start services.
