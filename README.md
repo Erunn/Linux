@@ -158,7 +158,14 @@ Go to  `/efi/loader/entries/` and add `rw quiet splash loglevel=3` at the end of
 -------------
 Environment Variables
 -------------
-| Variable | Value | Battery Benefit |
-|---------|-------|----------------|
-| `MOZ_X11_EGL` (Xorg) | 1 | Uses GPU for rendering instead of CPU, reducing CPU load and battery drain. |
-| `MOZ_ENABLE_WAYLAND` (Wayland) | 1 | Enables native Wayland rendering for more efficient GPU usage, lowering energy consumption. |
+| Variable | Value | Purpose |
+| :--- | :--- | :--- |
+| `MOZ_ENABLE_WAYLAND` | `1` | Forces Firefox to use the native Wayland backend for maximum speed and efficiency. |
+| `MOZ_VA_API_ALL_DRIVERS` | `1` | Forces Firefox VA-API hardware video decoding, drastically reducing CPU load and saving battery during video playback. |
+| `MOZ_ENABLE_DMABUF` | `1` | Enables Firefox Direct Memory Access Buffer sharing, reducing memory copies for better rendering efficiency. |
+| `MOZ_ACCELERATE_VSYNC` | `1` | Forces Firefox VSync to be handled by the Wayland compositor for smoother, more efficient rendering. |
+| `MOZ_DRM_DISABLE_PRIME` | `1` | Improves Firefox stability by disabling multi-GPU offloading logic on integrated-only systems. |
+| `QT_QPA_PLATFORM` | `wayland` | Forces Qt applications to use the native Wayland protocol instead of XWayland. |
+| `GDK_BACKEND` | `wayland,x11` | Tells GTK applications to prefer the native Wayland backend. |
+
+### Configuration File Content
