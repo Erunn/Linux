@@ -169,6 +169,11 @@ Environment Variables
 | `GDK_BACKEND` | `wayland,x11` | Tells GTK applications to prefer the native Wayland backend. |
 
 
+systemctl list-units --type=service --state=running
+systemctl list-timers
+systemctl --user list-units --type=service --state=running
+
+
 Stop and Mask the main AT-SPI D-Bus service:
 Bash
 
@@ -180,5 +185,7 @@ Bash
 
 systemctl --user mask org.a11y.atspi.Registry.service
 systemctl --user stop org.a11y.atspi.Registry.service
+
+systemctl --user stop dbus-:1.24-org.a11y.atspi.Registry@0.service
 
 ### Configuration File Content
