@@ -168,4 +168,17 @@ Environment Variables
 | `QT_QPA_PLATFORM` | `wayland` | Forces Qt applications to use the native Wayland protocol instead of XWayland. |
 | `GDK_BACKEND` | `wayland,x11` | Tells GTK applications to prefer the native Wayland backend. |
 
+
+Stop and Mask the main AT-SPI D-Bus service:
+Bash
+
+systemctl --user mask at-spi-dbus-bus.service
+systemctl --user stop at-spi-dbus-bus.service
+
+Stop and Mask the related Registry service:
+Bash
+
+systemctl --user mask org.a11y.atspi.Registry.service
+systemctl --user stop org.a11y.atspi.Registry.service
+
 ### Configuration File Content
