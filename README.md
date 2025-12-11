@@ -188,7 +188,7 @@ systemctl --user stop org.a11y.atspi.Registry.service
 
 Things to uninstall
 
-sudo pacman -Rns network-manager-applet
+sudo pacman -Rns network-manager-applet l3afpad
 
 systemctl --user stop dbus-:1.24-org.a11y.atspi.Registry@0.service
 
