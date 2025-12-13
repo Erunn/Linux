@@ -129,7 +129,7 @@ sudo pacman -Rns network-manager-applet l3afpad avahi vim
 
 ## 💻 System Maintenance
 
-#### 1. Full System Update & Cleanup
+### 1. Full System Update & Cleanup
 
 This comprehensive command updates the system, removes orphaned packages and their unused dependencies, and cleans the package cache, keeping only installed packages.
 
