@@ -204,9 +204,9 @@ systemctl --user list-units --type=service --state=running
 
 ### 1. Keeping the Boot Output Minimal
 
-Suppress most kernel messages during boot for a cleaner startup screen and enable Early Kernel Mode Setting (KMS) for smoother graphics initialization (best practice for Intel graphics).
+Suppress most kernel messages during boot for a cleaner startup screen and enable **Early Kernel Mode Setting (KMS)** for smoother graphics initialization (best practice for Intel graphics). 
 
-Go to /efi/loader/entries/ and add the following kernel parameters to the end of your .conf file:
+Go to `/efi/loader/entries/` and add the following kernel parameters to the end of your `.conf` file:
 
 ```
 rw quiet splash loglevel=3 i915.modeset=1
