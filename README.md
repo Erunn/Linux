@@ -47,12 +47,11 @@ You can now use `yay` to install the following software:
 | **intel-undervolt** | A utility for **undervolting Intel CPUs** under Linux to reduce heat and improve power efficiency. | `yay -S intel-undervolt` |
 | **labwc** | A **minimalist window-stacking Wayland compositor** (inspired by Openbox). The core of the desktop. | `yay -S labwc` |
 | **labwc-tweaks** | A **Qt-based GUI configuration tool** for managing `labwc` settings and themes. | `yay -S labwc-tweaks-git` |
-| **libnotify** | A library for sending **desktop notifications** to a notification daemon. | `yay -S libnotify` |
+| **kanshi** | A dynamic output configuration manager for Wayland that **automatically switches display profiles** (position, resolution) upon hotplug events (like docking/lid close). | `yay -S kanshi` |
 | **lxqt-wayland-session** | Provides the **necessary scripts and files** to launch an LXQt or compatible session under Wayland. | `yay -S lxqt-wayland-session` |
 | **nm-tray** | A simple **Qt-based NetworkManager frontend** that resides in the system tray for network access. | `yay -S nm-tray` |
 | **qalculate** | A versatile, cross-platform **desktop calculator** (Qt version) with symbolic calculation and unit conversion. | `yay -S qalculate-qt` |
 | **qt5-declarative** | Development files for **Qt 5's QML/declarative framework**, often a dependency for Qt-based apps. | `yay -S qt5-declarative` |
-| **qt5-tools** | A collection of **tools and utilities** that come with the Qt framework (e.g., Qt Assistant, Linguist). | `yay -S qt5-tools` |
 | **stress-ng** | A tool to **stress test** a computer system (CPU, memory, I/O) for stability and debugging. | `yay -S stress-ng` |
 | **TLP** | A feature-rich **command-line power management tool** for optimizing laptop battery life. | `yay -S tlp tlp-rdw` |
 | **TLPUI** | A **GTK graphical user interface** for easily configuring the TLP power management settings. | `yay -S tlpui` |
