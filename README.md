@@ -186,7 +186,7 @@ systemctl --user stop dbus-:1.24-org.a11y.atspi.Registry@0.service
 
 Things to uninstall
 
-sudo pacman -Rns network-manager-applet l3afpad avahi
+sudo pacman -Rns network-manager-applet l3afpad avahi vim
 
 
 
