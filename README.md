@@ -47,7 +47,7 @@ You can now use `yay` to install the following software:
 | **intel-undervolt** | A utility for **undervolting Intel CPUs** under Linux to reduce heat and improve power efficiency. | `yay -S intel-undervolt` |
 | **labwc** | A **minimalist window-stacking Wayland compositor** (inspired by Openbox). The core of the desktop. | `yay -S labwc` |
 | **labwc-tweaks** | A **Qt-based GUI configuration tool** for managing `labwc` settings and themes. | `yay -S labwc-tweaks-git` |
-| **kanshi** | A dynamic output configuration manager for Wayland that **automatically switches display profiles** (position, resolution) upon hotplug events (like docking/lid close). | `yay -S kanshi` |
+| **kanshi** | A dynamic output configuration manager for Wayland that **automatically switches display profiles**. | `yay -S kanshi` |
 | **lxqt-wayland-session** | Provides the **necessary scripts and files** to launch an LXQt or compatible session under Wayland. | `yay -S lxqt-wayland-session` |
 | **nm-tray** | A simple **Qt-based NetworkManager frontend** that resides in the system tray for network access. | `yay -S nm-tray` |
 | **qalculate** | A versatile, cross-platform **desktop calculator** (Qt version) with symbolic calculation and unit conversion. | `yay -S qalculate-qt` |
