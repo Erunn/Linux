@@ -87,6 +87,7 @@ Install the **Inter** font family and the **Nerd Fonts Symbols** package for com
 ```
 yay -S inter-font ttf-nerd-fonts-symbols
 ```
+---
 
 ## ⚡ System Optimization & Power Efficiency
 
@@ -123,6 +124,8 @@ Uninstall redundant or less efficient packages:
 ```
 sudo pacman -Rns network-manager-applet l3afpad avahi vim
 ```
+
+---
 
 ## 💻 System Maintenance
 
@@ -162,6 +165,8 @@ sudo journalctl --vacuum-size=100M
 sudo journalctl --vacuum-time=2weeks
 ```
 
+---
+
 ## 🔍 System Analysis & Debugging
 
 ### 1. Analyzing the Boot Process
@@ -192,6 +197,8 @@ systemctl list-units --type=service --state=running
 systemctl list-timers
 systemctl --user list-units --type=service --state=running
 ```
+
+---
 
 ## 🖥️ User Experience & Boot
 
