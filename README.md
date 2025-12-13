@@ -63,9 +63,10 @@ You can now use `yay` to install the following software:
 Fonts to Install
 -------------
 **Inter:** https://github.com/rsms/inter  
+**nerd.fonts:** https://github.com/ryanoasis/nerd-fonts  
 
 ```
-yay -S inter-font
+yay -S inter-font ttf-nerd-fonts-symbols
 ```
 
 System Maintenance
@@ -134,14 +135,7 @@ sudo systemctl status fstrim.timer
 Custom Command Widget - Battery stats
 -------------
 ```
-sh -c '
-  BAT_SYS_PATH="/sys/class/power_supply/BAT0"
-  BAT_UPOWER_PATH="/org/freedesktop/UPower/devices/battery_BAT0"
-  watt=$(awk "{printf \"%.2f W\", \$1 / 1000000}" "$BAT_SYS_PATH/power_now")
-  perc=$(cat "$BAT_SYS_PATH/capacity")%
-  time=$(upower -i "$BAT_UPOWER_PATH" | awk "/time/ {print \$4, \$5}")
-  echo "$perc | $time | $watt |"
-'
+sh -c 'BAT_SYS_PATH="/sys/class/power_supply/BAT0"; BAT_UPOWER_PATH="/org/freedesktop/UPower/devices/battery_BAT0"; watt=$(awk "{printf \" %.2f W\", \$1 / 1000000}" "$BAT_SYS_PATH/power_now"); perc=$(cat "$BAT_SYS_PATH/capacity")%; time=$(upower -i "$BAT_UPOWER_PATH" | awk "/time/ {print \" \"\$4, \$5}"); echo "|  $perc | $time | $watt |"'
 ```
 
 -------------
