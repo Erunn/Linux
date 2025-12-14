@@ -115,14 +115,13 @@ Stop and mask services that are often not required on a minimal laptop setup, sa
     systemctl --user stop at-spi-dbus-bus.service
     systemctl --user mask org.a11y.atspi.Registry.service
     systemctl --user stop org.a11y.atspi.Registry.service
-    systemctl --user stop dbus-:1.24-org.a11y.atspi.Registry@0.service
     ```
 
 ### 3. Cleaning Up Packages
 
 Uninstall redundant or less efficient packages:
 ```
-sudo pacman -Rns network-manager-applet l3afpad avahi vim
+sudo pacman -Rns network-manager-applet l3afpad vim
 ```
 
 ---
