@@ -206,10 +206,10 @@ systemctl --user list-units --type=service --state=running
 
 Suppress most kernel messages during boot for a cleaner startup screen and enable **Early Kernel Mode Setting (KMS)** for smoother graphics initialization (best practice for Intel graphics). 
 
-Go to `/efi/loader/entries/` and add the following kernel parameters to the end of your `.conf` file:
+Edit `/etc/kernel/cmdline` and add the following kernel parameters to the end of your `.conf` file:
 
 ```
-rw quiet splash loglevel=3 i915.modeset=1
+quiet splash loglevel=3 i915.modeset=1
 ```
 
 ### 2. Custom Command Widget - Battery Stats
