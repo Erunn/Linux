@@ -218,3 +218,42 @@ This command provides detailed battery statistics (percentage, remaining time, a
 ```
 sh -c 'BAT_SYS_PATH="/sys/class/power_supply/BAT0"; BAT_UPOWER_PATH="/org/freedesktop/UPower/devices/battery_BAT0"; watt=$(awk "{printf \" %.2f W\", \$1 / 1000000}" "$BAT_SYS_PATH/power_now"); perc=$(cat "$BAT_SYS_PATH/capacity")%; time=$(upower -i "$BAT_UPOWER_PATH" | awk "/time/ {print \" \"\$4, \$5}"); echo "|  $perc | $time | $watt |"'
 ```
+
+## 🎨 Theming
+
+### 1. Catppuccin Frappé
+
+This table provides the specific hex codes to achieve a Frappé look within the LXQt Appearance settings.
+
+| UI Element | Catppuccin Role | Hex Code | Swatch |
+| :--- | :--- | :--- | :--- |
+| **Window** | Base | `#303446` | ![#303446](https://via.placeholder.com/15/303446/000000?text=+) |
+| **Window Text** | Text | `#c6d0f5` | ![#c6d0f5](https://via.placeholder.com/15/c6d0f5/000000?text=+) |
+| **View (List/Input)** | Mantle | `#292c3c` | ![#292c3c](https://via.placeholder.com/15/292c3c/000000?text=+) |
+| **View Text** | Text | `#c6d0f5` | ![#c6d0f5](https://via.placeholder.com/15/c6d0f5/000000?text=+) |
+| **Selection** | Lavender | `#babbf1` | ![#babbf1](https://via.placeholder.com/15/babbf1/000000?text=+) |
+| **Selected Text** | Base | `#303446` | ![#303446](https://via.placeholder.com/15/303446/000000?text=+) |
+| **Tooltip** | Mantle | `#292c3c` | ![#292c3c](https://via.placeholder.com/15/292c3c/000000?text=+) |
+| **Tooltip Text** | Text | `#c6d0f5` | ![#c6d0f5](https://via.placeholder.com/15/c6d0f5/000000?text=+) |
+| **Link** | Blue | `#8caaee` | ![#8caaee](https://via.placeholder.com/15/8caaee/000000?text=+) |
+| **Visited Link** | Mauve | `#ca9ee6` | ![#ca9ee6](https://via.placeholder.com/15/ca9ee6/000000?text=+) |
+| **Taskbar BG** | Crust | `#232634` | ![#232634](https://via.placeholder.com/15/232634/000000?text=+) |
+```
+
+### 2. Catppuccin Latte
+
+This table provides the specific hex codes for the Latte (Light) flavor, mapped to the LXQt Appearance elements.
+
+| UI Element | Catppuccin Role | Hex Code | Swatch |
+| :--- | :--- | :--- | :--- |
+| **Window** | Base | `#eff1f5` | ![#eff1f5](https://via.placeholder.com/15/eff1f5/000000?text=+) |
+| **Window Text** | Text | `#4c4f69` | ![#4c4f69](https://via.placeholder.com/15/4c4f69/000000?text=+) |
+| **View (List/Input)** | Mantle | `#e6e9ef` | ![#e6e9ef](https://via.placeholder.com/15/e6e9ef/000000?text=+) |
+| **View Text** | Text | `#4c4f69` | ![#4c4f69](https://via.placeholder.com/15/4c4f69/000000?text=+) |
+| **Selection** | Lavender | `#7287fd` | ![#7287fd](https://via.placeholder.com/15/7287fd/000000?text=+) |
+| **Selected Text** | Base | `#eff1f5` | ![#eff1f5](https://via.placeholder.com/15/eff1f5/000000?text=+) |
+| **Tooltip** | Mantle | `#e6e9ef` | ![#e6e9ef](https://via.placeholder.com/15/e6e9ef/000000?text=+) |
+| **Tooltip Text** | Text | `#4c4f69` | ![#4c4f69](https://via.placeholder.com/15/4c4f69/000000?text=+) |
+| **Link** | Blue | `#1e66f5` | ![#1e66f5](https://via.placeholder.com/15/1e66f5/000000?text=+) |
+| **Visited Link** | Mauve | `#8839ef` | ![#8839ef](https://via.placeholder.com/15/8839ef/000000?text=+) |
+| **Taskbar BG** | Crust | `#dce0e8` | ![#dce0e8](https://via.placeholder.com/15/dce0e8/000000?text=+) |
