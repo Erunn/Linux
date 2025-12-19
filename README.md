@@ -240,6 +240,12 @@ This table provides the specific hex codes to achieve a Frappé look within the 
 | **Taskbar BG** | Crust | `#232634` | ![#232634](https://via.placeholder.com/15/232634/000000?text=+) |
 ```
 
+LXQT themes command
+
+sudo cp -r /home/rui/Downloads/catppuccin-frappe /usr/share/lxqt/themes/
+
+
+
 ### 2. Catppuccin Latte
 
 This table provides the specific hex codes for the Latte (Light) flavor, mapped to the LXQt Appearance elements.
