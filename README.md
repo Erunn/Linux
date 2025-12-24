@@ -46,29 +46,39 @@ Use `yay` to install the essential packages, grouped by their function:
 | Name | Purpose | Installation Command |
 | :--- | :--- | :--- |
 | **labwc** | Minimalist window-stacking **Wayland compositor** (core of the desktop). | `yay -S labwc` |
-| **lxqt-wayland-session** | Provides necessary files to launch the LXQt session under Wayland. | `yay -S lxqt-wayland-session` |
-| **qt5-declarative** | Development files for **Qt 5's QML/declarative framework** (often a dependency for Qt apps/widgets). | `yay -S qt5-declarative` |
-| **kanshi** | Dynamic output configuration manager for Wayland (automatically switches display profiles). | `yay -S kanshi` |
-| **wdisplays** | Graphical utility for configuring display outputs (resolution, position, rotation) on Wayland. | `yay -S wdisplays` |
 | **labwc-tweaks** | Qt-based GUI configuration tool for managing `labwc` settings and themes. | `yay -S labwc-tweaks-git` |
+| **lxqt-wayland-session** | Provides necessary files to launch the LXQt session under Wayland. | `yay -S lxqt-wayland-session` |
+| **qt5-declarative** | Development files for **Qt 5's QML/declarative framework**. | `yay -S qt5-declarative` |
+
+#### 🖥️ Display & Output Control
+
+| Name | Purpose | Installation Command |
+| :--- | :--- | :--- |
+| **brightnessctl** | Lightweight tool to read and control **device backlight** (monitor brightness). | `yay -S brightnessctl` |
+| **kanshi** | Dynamic output configuration manager for Wayland (automatically switches display profiles). | `yay -S kanshi` |
+| **swayidle** | Idle management daemon (used for locking the screen or turning off monitors). | `yay -S swayidle` |
+| **waylock** | Simple **screen locker** for Wayland compositors. | `yay -S waylock` |
+| **wdisplays** | Graphical utility for configuring display outputs (resolution, position, rotation). | `yay -S wdisplays` |
+| **wlopm** | Wayland output power management (allows turning monitors on/off via CLI). | `yay -S wlopm` |
 
 #### ⚙️ System Utilities & Services
 
 | Name | Purpose | Installation Command |
 | :--- | :--- | :--- |
 | **bluez & blueman** | The official Linux Bluetooth stack and the GTK+ Bluetooth Manager (GUI). | `yay -S bluez blueman` |
-| **nm-tray** | Simple **Qt-based NetworkManager frontend** that resides in the system tray. | `yay -S nm-tray` |
-| **gvfs** | GNOME Virtual File System for accessing remote filesystems (SFTP, SMB). | `yay -S gvfs` |
 | **fwupd** | Daemon to manage the installation of **firmware updates** (UEFI/Capsule). | `yay -S fwupd` |
+| **gvfs** | GNOME Virtual File System for accessing remote filesystems (SFTP, SMB). | `yay -S gvfs` |
+| **nm-tray** | Simple **Qt-based NetworkManager frontend** that resides in the system tray. | `yay -S nm-tray` |
 | **stress-ng** | Tool to stress test a computer system for stability and debugging. | `yay -S stress-ng` |
+| **unzip** | Extraction utility for compressed **.zip** archives. | `yay -S unzip` |
 
 #### ⚡ Power & Hardware Management
 
 | Name | Purpose | Installation Command |
 | :--- | :--- | :--- |
-| **TLP & TLPUI** | Feature-rich power management tool and its GTK graphical user interface. | `yay -S tlp tlp-rdw tlpui` |
 | **intel-ucode** | Critical **Intel processor microcode updates** for security and bug fixes. | `yay -S intel-ucode` |
 | **intel-undervolt** | Utility for **undervolting Intel CPUs** to reduce heat and improve power efficiency. | `yay -S intel-undervolt` |
+| **TLP & TLPUI** | Feature-rich power management tool and its GTK graphical user interface. | `yay -S tlp tlp-rdw tlpui` |
 
 #### 📝 Desktop Applications
 
@@ -275,5 +285,14 @@ sudo systemctl mask systemd-tpm2-setup-early.service systemd-tpm2-setup.service 
 3. Cleanup redundant Network checks
 
 You can also shave off a little more time by stopping the system from waiting for the Wi-Fi to "fully" connect before showing you the login screen:
+
+
+
+
+sudo nano /etc/mkinitcpio.conf
+
+MODULES=(i915)
+
+sudo mkinitcpio -P
 
 sudo systemctl disable NetworkManager-wait-online.service
