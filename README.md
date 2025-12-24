@@ -263,3 +263,17 @@ This table provides the specific hex codes for the Latte (Light) flavor, mapped 
 | **Link** | Blue | `#1e66f5` | ![#1e66f5](https://via.placeholder.com/15/1e66f5/000000?text=+) |
 | **Visited Link** | Mauve | `#8839ef` | ![#8839ef](https://via.placeholder.com/15/8839ef/000000?text=+) |
 | **Taskbar BG** | Crust | `#dce0e8` | ![#dce0e8](https://via.placeholder.com/15/dce0e8/000000?text=+) |
+
+
+lsblk -f
+
+Your main partition (nvme0n1p2) is a standard Btrfs filesystem. There is no crypto_LUKS anywhere. This means your computer is spending 5.3 seconds every boot trying to talk to a security chip (TPM) that you aren't even using for your drive.
+
+You can safely reclaim that time right now.
+sudo systemctl mask systemd-tpm2-setup-early.service systemd-tpm2-setup.service systemd-pcrproduct.service
+
+3. Cleanup redundant Network checks
+
+You can also shave off a little more time by stopping the system from waiting for the Wi-Fi to "fully" connect before showing you the login screen:
+
+sudo systemctl disable NetworkManager-wait-online.service
