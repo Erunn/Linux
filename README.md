@@ -60,6 +60,7 @@ Use `yay` to install the essential packages, grouped by their function:
 | **waylock** | Simple **screen locker** for Wayland compositors. | `yay -S waylock` |
 | **wdisplays** | Graphical utility for configuring display outputs (resolution, position, rotation). | `yay -S wdisplays` |
 | **wlopm** | Wayland output power management (allows turning monitors on/off via CLI). | `yay -S wlopm` |
+| **wlsunset** | Day/night gamma mask for Wayland (Blue light filter). | `yay -S wlsunset` |
 
 #### ⚙️ System Utilities & Services
 
