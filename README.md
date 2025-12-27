@@ -98,6 +98,7 @@ Install the **Inter** font family and the **Nerd Fonts Symbols** package for com
 ```
 yay -S inter-font ttf-nerd-fonts-symbols
 ```
+
 ---
 
 ## ⚡ System Optimization & Power Efficiency
@@ -115,20 +116,54 @@ Set these environment variables in your LXQt Session Settings (or `~/.profile`) 
 | `QT_QPA_PLATFORM` | `wayland` | Forces Qt applications (like LXQt components) to use the native Wayland protocol for efficiency. |
 | `GDK_BACKEND` | `wayland` | Tells GTK applications to prefer the native Wayland backend over XWayland. |
 
-### 2. Taming Unnecessary Services
+### 2. Kernel: Early Modesetting (KMS)
+To prevent screen flickering and ensure the Intel UHD 620 graphics are initialized as early as possible, the `i915` module is loaded during the initramfs stage.
 
-Stop and mask services that are often not required on a minimal laptop setup, saving boot time and resources.
+1. Edit `/etc/mkinitcpio.conf`:
 
-* **Stop and Mask Accessibility Services (AT-SPI):**
-    This often reduces memory use and latency if you do not use screen readers or other accessibility tools.
-    ```bash
-    systemctl --user mask at-spi-dbus-bus.service
-    systemctl --user stop at-spi-dbus-bus.service
-    systemctl --user mask org.a11y.atspi.Registry.service
-    systemctl --user stop org.a11y.atspi.Registry.service
-    ```
+```
+MODULES=(i915)
+```
 
-### 3. Cleaning Up Packages
+Regenerate the initramfs:
+```
+sudo mkinitcpio -P
+```
+
+### 3. Systemd: TPM & Security Masking
+
+If you suse a standard BTFRS partition without LUKS encryption, the 5+ second delay caused by the system polling the TPM 2.0 can be eliminated by masking the relevant services.
+
+```
+sudo systemctl mask \
+  systemd-tpm2-setup-early.service \
+  systemd-tpm2-setup.service \
+  systemd-pcrproduct.service \
+  systemd-pcrphase.service \
+  systemd-pcrphase-sysinit.service \
+  systemd-pcrmachine.service
+```
+
+### 4. Network: Non-Blocking Startup
+
+By default, some systems wait for a confirmed internet connection before reaching the login manager. Disabling this service allows the desktop to load while Wi-Fi connects in the background.
+
+```
+sudo systemctl disable NetworkManager-wait-online.service
+```
+
+### 5. User Interface: Accessibility (AT-SPI) Cleanup
+
+To reduce memory overhead and slight app-launch latency, accessibility bus services can be disabled.
+
+```
+systemctl --user mask at-spi-dbus-bus.service
+systemctl --user mask org.a11y.atspi.Registry.service
+systemctl --user stop at-spi-dbus-bus.service
+systemctl --user stop org.a11y.atspi.Registry.service
+```
+
+### 6. Cleaning Up Packages
 
 Uninstall redundant or less efficient packages:
 ```
@@ -244,13 +279,6 @@ This table provides the specific hex codes to achieve a Frappé look within the 
 | **Link** | Blue | `#8caaee` | ![#8caaee](https://via.placeholder.com/15/8caaee/000000?text=+) |
 | **Visited Link** | Mauve | `#ca9ee6` | ![#ca9ee6](https://via.placeholder.com/15/ca9ee6/000000?text=+) |
 | **Taskbar BG** | Crust | `#232634` | ![#232634](https://via.placeholder.com/15/232634/000000?text=+) |
-```
-
-LXQT themes command
-
-sudo cp -r /home/rui/Downloads/catppuccin-frappe /usr/share/lxqt/themes/
-
-
 
 ### 2. Catppuccin Latte
 
@@ -270,25 +298,8 @@ This table provides the specific hex codes for the Latte (Light) flavor, mapped 
 | **Visited Link** | Mauve | `#8839ef` | ![#8839ef](https://via.placeholder.com/15/8839ef/000000?text=+) |
 | **Taskbar BG** | Crust | `#dce0e8` | ![#dce0e8](https://via.placeholder.com/15/dce0e8/000000?text=+) |
 
+### 3. LXQT themes command
 
-lsblk -f
-
-Your main partition (nvme0n1p2) is a standard Btrfs filesystem. There is no crypto_LUKS anywhere. This means your computer is spending 5.3 seconds every boot trying to talk to a security chip (TPM) that you aren't even using for your drive.
-
-You can safely reclaim that time right now.
-sudo systemctl mask systemd-tpm2-setup-early.service systemd-tpm2-setup.service systemd-pcrproduct.service
-
-3. Cleanup redundant Network checks
-
-You can also shave off a little more time by stopping the system from waiting for the Wi-Fi to "fully" connect before showing you the login screen:
-
-
-
-
-sudo nano /etc/mkinitcpio.conf
-
-MODULES=(i915)
-
-sudo mkinitcpio -P
-
-sudo systemctl disable NetworkManager-wait-online.service
+```
+sudo cp -r /home/rui/Downloads/catppuccin-frappe /usr/share/lxqt/themes/
+```
