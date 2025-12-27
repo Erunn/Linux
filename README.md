@@ -144,12 +144,7 @@ sudo pacman -Rns network-manager-applet l3afpad vim
 This comprehensive command updates the system, removes orphaned packages and their unused dependencies, and cleans the package cache, keeping only installed packages.
 
 ```
-yay -Syyu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
-```
-
-Alternatively, using pacman for orphaned packages:
-```
-sudo pacman -Syyu && sudo pacman -Rns $(pacman -Qdtq) && sudo pacman -Sc
+sudo rm -rf /var/cache/pacman/pkg/download-* && yay -Syu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
 ```
 
 ### 2. Enable SSD TRIM
