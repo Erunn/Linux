@@ -162,8 +162,20 @@
   systemctl --user stop at-spi-dbus-bus.service
   systemctl --user stop org.a11y.atspi.Registry.service
   ```
+
+  ### 6. Bluetooth "Auto-On" Disable
+
+  By default, Bluetooth often powers on at every boot, wasting battery if you don't use it.
+
+  Edit /etc/bluetooth/main.conf and set: 
+
+  ```
+  AutoEnable=false
+  ```
+  > [!IMPORTANT]
+  > If it has a # at the beginning of the line, delete the # to "uncomment" it.
   
-  ### 6. Cleaning Up Packages
+  ### 7. Cleaning Up Packages
   
   Uninstall redundant or less efficient packages:
   ```
