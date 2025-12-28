@@ -241,9 +241,11 @@
   List active services and timers for debugging or optimization purposes:
   
   ```
-  systemctl list-units --type=service --state=running
-  systemctl list-timers
-  systemctl --user list-units --type=service --state=running
+
+  systemctl list-units --type=service --state=active
+  systemctl --failed
+  systemctl --user list-units --type=service --state=active
+  systemctl list-timers 
   ```
   
   ---
