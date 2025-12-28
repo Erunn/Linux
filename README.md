@@ -294,7 +294,7 @@
   HOOKS=(microcode systemd autodetect modconf kms keyboard sd-vconsole block filesystems)
   ```
   
-  Run the following command to "bake" your new settings into the bootable image:
+  Run the following command to "bake" "bake" these hooks into the .efi binary that the BIOS actually executes.
   
   ```
   sudo mkinitcpio -P
