@@ -115,7 +115,45 @@
   | `MOZ_ACCELERATE_VSYNC` | `1` | Forces Firefox VSync to be handled by the Wayland compositor for smoother, more efficient rendering. |
   | `QT_QPA_PLATFORM` | `wayland` | Forces Qt applications (like LXQt components) to use the native Wayland protocol for efficiency. |
   | `GDK_BACKEND` | `wayland` | Tells GTK applications to prefer the native Wayland backend over XWayland. |
-  
+
+### 2. Wireless Networking with iwd (iNet Wireless Daemon)
+
+I have replaced the default `wpa_supplicant` with `iwd`. It is written by Intel specifically for Linux, offering faster connection times, lower memory footprint, and a much cleaner command-line interface.
+`iwd`also handles the "roaming" between **2.4GHz and 5GHz** bands much more gracefully than the old `wpa_supplicant`, which helps prevent those annoying 1-second drops when moving the laptop around the house; it also significantly improves the **"Resume from Sleep"** time.
+
+To use `iwd` as the backend for **NetworkManager**, create this configuration file:
+
+```
+sudo nano /etc/NetworkManager/conf.d/wifi_backend.conf
+```
+
+and add the following lines:
+
+```
+[device]
+wifi.backend=iwd
+```
+
+After saving, disable the old wpa_supplicant service to prevent conflicts:
+
+```
+sudo systemctl disable --now wpa_supplicant
+```
+
+#### iwd Cheat Sheet (iwctl)
+
+Quick scan and list:
+
+```
+iwctl station wlan0 scan && iwctl station wlan0 get-networks
+```
+
+Connect to your home Wi-Fi instantly:
+
+```
+iwctl --passphrase "YOUR_PASSWORD" station wlan0 connect "YOUR_SSID"
+```
+
   ### 2. Kernel: Early Modesetting (KMS)
   To prevent screen flickering and ensure the Intel UHD 620 graphics are initialized as early as possible, the `i915` module is loaded during the initramfs stage.
   
@@ -126,6 +164,7 @@
   ```
   
   Regenerate the initramfs:
+
   ```
   sudo mkinitcpio -P
   ```
@@ -223,7 +262,7 @@
   Execute the command:
 
   ```
-  sudo featherpad /etc/systemd/journald.conf
+  sudo nano /etc/systemd/journald.conf
   ```
 
   Find and change these lines (remove the # at the start):
