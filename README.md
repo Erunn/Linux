@@ -249,7 +249,7 @@ Suppress most kernel messages during boot for a cleaner startup screen and enabl
 Edit `/etc/kernel/cmdline` and add the following kernel parameters to the end of your `.conf` file:
 
 ```
-quiet splash loglevel=3 i915.modeset=1
+quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 i915.modeset=1
 ```
 
 ### 2. Custom Command Widget - Battery Stats
