@@ -105,7 +105,7 @@
   
   ### 1. Wayland Environment Variables
   
-  Set these environment variables in your LXQt Session Settings (or `~/.profile`) for maximum performance and battery savings on the Wayland compositor. 
+  Set these environment variables in your LXQt Session Settings for maximum performance and battery savings on the Wayland compositor. 
   
   | Variable | Value | Purpose |
   | :--- | :--- | :--- |
@@ -115,6 +115,8 @@
   | `MOZ_ACCELERATE_VSYNC` | `1` | Forces Firefox VSync to be handled by the Wayland compositor for smoother, more efficient rendering. |
   | `QT_QPA_PLATFORM` | `wayland` | Forces Qt applications (like LXQt components) to use the native Wayland protocol for efficiency. |
   | `GDK_BACKEND` | `wayland` | Tells GTK applications to prefer the native Wayland backend over XWayland. |
+  | `GTK_MODULES` | `""` | Prevents GTK from searching for legacy accessibility modules. |
+  | `NO_AT_BRIDGE` | `1` | Disables the AT-SPI accessibility bus to reduce overhead and launch lag. |
 
 ### 2. Wireless Networking with iwd (iNet Wireless Daemon)
 
@@ -137,7 +139,7 @@ wifi.backend=iwd
 After saving, disable the old wpa_supplicant service to prevent conflicts:
 
 ```
-sudo systemctl disable --now wpa_supplicant
+sudo systemctl disable --now wpa_supplicant.service
 ```
 
 #### iwd Cheat Sheet (iwctl)
@@ -171,7 +173,8 @@ iwctl --passphrase "YOUR_PASSWORD" station wlan0 connect "YOUR_SSID"
   
   ### 3. Systemd: TPM & Security Masking
   
-  If you suse a standard BTFRS partition without LUKS encryption, the 5+ second delay caused by the system polling the TPM 2.0 can be eliminated by masking the relevant services.
+If you suse a standard BTFRS partition without LUKS encryption, the 5+ second delay caused by the system polling the TPM 2.0 can be eliminated by masking the relevant services.
+This way, we are avoiding a Software Delay, by preventing systemd from waiting for the chip to initialize
   
   ```
   sudo systemctl mask \
@@ -202,15 +205,7 @@ iwctl --passphrase "YOUR_PASSWORD" station wlan0 connect "YOUR_SSID"
   systemctl --user stop org.a11y.atspi.Registry.service
   ```
 
-### 6. Network: Redundancy Cleanup
-
-  On a clean Arch setup using NetworkManager, you typically do not want wpa_supplicant running as a standalone service. NetworkManager will automatically start its own instance of wpa_supplicant in the background when it needs it.
-
-   ```
-   sudo systemctl disable --now wpa_supplicant.service
-   ```
-
-  ### 7. Bluetooth "Auto-On" Disable
+  ### 6. Bluetooth "Auto-On" Disable
 
   By default, Bluetooth often powers on at every boot, wasting battery if you don't use it.
 
@@ -222,7 +217,7 @@ iwctl --passphrase "YOUR_PASSWORD" station wlan0 connect "YOUR_SSID"
   > [!IMPORTANT]
   > If it has a # at the beginning of the line, delete the # to "uncomment" it.
   
-  ### 8. Cleaning Up Packages
+  ### 7. Cleaning Up Packages
   
   Uninstall redundant or less efficient packages:
   ```
@@ -321,7 +316,7 @@ iwctl --passphrase "YOUR_PASSWORD" station wlan0 connect "YOUR_SSID"
   | `loglevel=3` | Error Filtering | Only shows critical system errors; hides non-essential warnings. |
   | `rd.systemd.show_status=auto` | Smart Status | Hides "Started [Service Name]" messages unless a service fails. |
   | `rd.udev.log_priority=3` | Udev Silence | Prevents hardware discovery logs from cluttering the screen. |
-  | `tpm_tis.interrupts=0` | TPM Optimization | Fixes a common ThinkPad bug where the TPM chip hangs the boot. |
+  | `tpm_tis.interrupts=0` | TPM Optimization | Fixes a hardware delay caused by a common ThinkPad bug where the TPM chip hangs the boot. |
   | `8250.nr_uarts=0` | Disable Serial Probing | Skips the search for legacy 9-pin serial ports. |
   | `i915.modeset=1` | Early KMS | Forces Intel graphics to load early to match native screen resolution. |
   
