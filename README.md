@@ -263,13 +263,41 @@ Edit `/etc/kernel/cmdline` and add the following kernel parameters to the end of
 quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm_tis.interrupts=0 8250.nr_uarts=0 i915.modeset=1
 ```
 
-Rebuild the image to "bake" these new flags into the UKI.
+Run the following command to rebuild the image and "bake" these new flags into the UKI.
 
 ```
 sudo mkinitcpio -P
 ```
 
-### 2. Custom Command Widget - Battery Stats
+### 2. Initramfs Configuration (`mkinitcpio.conf`)
+
+The `initramfs` is a small environment that loads the hardware drivers needed to mount the root file system. This is an optimized hooks, in order to prioritize stability and boot speed.
+
+Hook | Function | Impact |
+| :--- | :--- | :--- |
+| **`microcode`** | CPU Patching | **Critical:** Must be first. Patches Intel CPU bugs before the image is unpacked. |
+| **`systemd`** | Init Controller | Replaces the legacy `base` hook for a faster, parallelized boot process. |
+| **`autodetect`** | Image Shrinker | Scans the T480s hardware to keep the boot image as small as possible. |
+| **`modconf`** | Module Config | Includes custom driver configurations (like undervolting or GPU tweaks). |
+| **`kms`** | Graphics Setup | Enables Early Kernel Mode Setting for a flicker-free transition to the GUI. |
+| **`keyboard`** | Input Support | Ensures the laptop keyboard works during the very early stages of boot. |
+| **`sd-vconsole`** | Virtual Console | Sets the correct system font and keyboard layout for the terminal. |
+| **`block`** | Storage Drivers | Provides the necessary drivers to communicate with the NVMe SSD. |
+| **`filesystems`** | FS Support | Allows the kernel to mount and read the **Btrfs** root partition. |
+
+Edit `/etc/mkinitcpio.conf` and edit the hooks line, to look like this:
+
+```
+HOOKS=(microcode systemd autodetect modconf kms keyboard sd-vconsole block filesystems)
+```
+
+Run the following command to "bake" your new settings into the bootable image:
+
+```
+sudo mkinitcpio -P
+```
+
+### 3. Custom Command Widget - Battery Stats
 
 This command provides detailed battery statistics (percentage, remaining time, and power draw in Watts) for use in status bars or custom widgets.
 
