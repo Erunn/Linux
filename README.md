@@ -252,8 +252,7 @@
   Identify any failed services and check the journal for critical errors:
   
   ```
-  sudo journalctl -p 3 -xb --no-hostname --no-pager
-  sudo journalctl -u tlp -u intel-undervolt -b
+  echo "--- KERNEL ERRORS ---"; sudo journalctl -p 3 -xb --no-hostname --no-pager; echo "--- POWER & VOLTAGE ---"; sudo journalctl -u tlp -u intel-undervolt -b; echo "--- BTRFS HEALTH ---"; sudo journalctl -t btrfs -b; echo "--- ZRAM STATUS ---"; zramctl
   ```
   
   ### 3. Running Services and Timers
