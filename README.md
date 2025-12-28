@@ -309,16 +309,20 @@ This way, we are avoiding a Software Delay, by preventing systemd from waiting f
   
   These flags focus on silencing the console and skipping unnecessary hardware timeouts.
   
-  | Parameter | Function | Impact |
-  | :--- | :--- | :--- |
-  | `quiet` | Suppresses kernel logs | Cleaner, flicker-free boot experience. |
-  | `splash` | Enables Boot Splash | Prepares the system to show a splash image/logo. |
-  | `loglevel=3` | Error Filtering | Only shows critical system errors; hides non-essential warnings. |
-  | `rd.systemd.show_status=auto` | Smart Status | Hides "Started [Service Name]" messages unless a service fails. |
-  | `rd.udev.log_priority=3` | Udev Silence | Prevents hardware discovery logs from cluttering the screen. |
-  | `tpm_tis.interrupts=0` | TPM Optimization | Fixes a hardware delay caused by a common ThinkPad bug where the TPM chip hangs the boot. |
-  | `8250.nr_uarts=0` | Disable Serial Probing | Skips the search for legacy 9-pin serial ports. |
-  | `i915.modeset=1` | Early KMS | Forces Intel graphics to load early to match native screen resolution. |
+| Parameter | Function | Impact |
+| :--- | :--- | :--- |
+| `quiet` | Suppresses kernel logs | Cleaner, flicker-free boot experience. |
+| `splash` | Enables Boot Splash | Prepares the system to show a splash image/logo. |
+| `loglevel=3` | Error Filtering | Only shows critical system errors; hides non-essential warnings. |
+| `rd.systemd.show_status=auto` | Smart Status | Hides "Started [Service Name]" messages unless a service fails. |
+| `rd.udev.log_priority=3` | Udev Silence | Prevents hardware discovery logs from cluttering the screen. |
+| `tpm_tis.interrupts=0` | TPM Interrupt Fix | Fixes a specific ThinkPad hardware hang during TPM interrupt probing. |
+| `modprobe.blacklist=tpm_tis,tpm_tis_core` | TPM Driver Blacklist | **Extreme Optimization:** Prevents the TPM driver from loading, saving ~2.6s of device wait time. |
+| `8250.nr_uarts=0` | Disable Serial Probing | Skips the search for legacy 9-pin serial ports. |
+| `i915.modeset=1` | Early KMS | Forces Intel graphics to load early to match native screen resolution. |
+
+> [!IMPORTANT]
+> Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
   
   Edit `/etc/kernel/cmdline` and add the following kernel parameters to the end of the `.conf` file:
   
