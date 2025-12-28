@@ -199,12 +199,20 @@
   ### 3. Taming the Journal Size
   
   Limit the size and age of the systemd journal logs to prevent disk space consumption:
-  
+
+  Execute the command:
+
   ```
-  sudo journalctl --vacuum-size=100M
-  sudo journalctl --vacuum-time=2weeks
+  sudo featherpad /etc/systemd/journald.conf
   ```
-  
+
+  Find and change these lines (remove the # at the start):
+
+  ```
+  SystemMaxUse=100M
+  MaxRetentionSec=2week
+  ```
+
   ---
   
   ## 🔍 System Analysis & Debugging
