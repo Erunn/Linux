@@ -252,8 +252,8 @@
   Identify any failed services and check the journal for critical errors:
   
   ```
-  sudo systemctl --failed
-  sudo journalctl -p 3 -xb
+  sudo journalctl -p 3 -xb --no-hostname --no-pager
+  sudo journalctl -u tlp -u intel-undervolt -b
   ```
   
   ### 3. Running Services and Timers
