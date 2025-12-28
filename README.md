@@ -163,7 +163,15 @@
   systemctl --user stop org.a11y.atspi.Registry.service
   ```
 
-  ### 6. Bluetooth "Auto-On" Disable
+### 6. Network: Redundancy Cleanup
+
+  On a clean Arch setup using NetworkManager, you typically do not want wpa_supplicant running as a standalone service. NetworkManager will automatically start its own instance of wpa_supplicant in the background when it needs it.
+
+   ```
+   sudo systemctl disable --now wpa_supplicant.service
+   ```
+
+  ### 7. Bluetooth "Auto-On" Disable
 
   By default, Bluetooth often powers on at every boot, wasting battery if you don't use it.
 
@@ -175,7 +183,7 @@
   > [!IMPORTANT]
   > If it has a # at the beginning of the line, delete the # to "uncomment" it.
   
-  ### 7. Cleaning Up Packages
+  ### 8. Cleaning Up Packages
   
   Uninstall redundant or less efficient packages:
   ```
