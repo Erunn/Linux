@@ -149,7 +149,7 @@ sudo systemctl mask \
 By default, some systems wait for a confirmed internet connection before reaching the login manager. Disabling this service allows the desktop to load while Wi-Fi connects in the background.
 
 ```
-sudo systemctl disable NetworkManager-wait-online.service
+sudo systemctl mask NetworkManager-wait-online.service
 ```
 
 ### 5. User Interface: Accessibility (AT-SPI) Cleanup
@@ -242,14 +242,31 @@ systemctl --user list-units --type=service --state=running
 
 ## 🖥️ User Experience & Boot
 
-### 1. Keeping the Boot Output Minimal
+### 1. Optimized Kernel Boot Parameters
 
-Suppress most kernel messages during boot for a cleaner startup screen and enable **Early Kernel Mode Setting (KMS)** for smoother graphics initialization (best practice for Intel graphics). 
+These flags focus on silencing the console and skipping unnecessary hardware timeouts.
 
-Edit `/etc/kernel/cmdline` and add the following kernel parameters to the end of your `.conf` file:
+| Parameter | Function | Impact |
+| :--- | :--- | :--- |
+| `quiet` | Suppresses kernel logs | Cleaner, flicker-free boot experience. |
+| `splash` | Enables Boot Splash | Prepares the system to show a splash image/logo. |
+| `loglevel=3` | Error Filtering | Only shows critical system errors; hides non-essential warnings. |
+| `rd.systemd.show_status=auto` | Smart Status | Hides "Started [Service Name]" messages unless a service fails. |
+| `rd.udev.log_priority=3` | Udev Silence | Prevents hardware discovery logs from cluttering the screen. |
+| `tpm_tis.interrupts=0` | TPM Optimization | Fixes a common ThinkPad bug where the TPM chip hangs the boot. |
+| `8250.nr_uarts=0` | Disable Serial Probing | Skips the search for legacy 9-pin serial ports. |
+| `i915.modeset=1` | Early KMS | Forces Intel graphics to load early to match native screen resolution. |
+
+Edit `/etc/kernel/cmdline` and add the following kernel parameters to the end of the `.conf` file:
 
 ```
-quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 i915.modeset=1
+quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm_tis.interrupts=0 8250.nr_uarts=0 i915.modeset=1
+```
+
+Rebuild the image to "bake" these new flags into the UKI.
+
+```
+sudo mkinitcpio -P
 ```
 
 ### 2. Custom Command Widget - Battery Stats
