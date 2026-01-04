@@ -374,6 +374,9 @@ This way, we are avoiding a Software Delay, by preventing systemd from waiting f
 | `modprobe.blacklist=tpm_tis,tpm_tis_core` | TPM Driver Blacklist | **Extreme Optimization:** Prevents the TPM driver from loading, saving ~2.6s of device wait time. |
 | `8250.nr_uarts=0` | Disable Serial Probing | Skips the search for legacy 9-pin serial ports. |
 | `i915.modeset=1` | Early KMS | Forces Intel graphics to load early to match native screen resolution. |
+| `i915.enable_fbc=1` | Frame Buffer Compression | Reduces memory bandwidth/power usage. |
+| `i915.enable_psr=1` | Panel Self Refresh | Allows GPU to sleep when the screen is static. |
+| `i915.enable_guc=3` | GuC/HuC Loading | Offloads media/power tasks to specialized firmware. |
 
 > [!IMPORTANT]
 > Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
@@ -381,7 +384,7 @@ This way, we are avoiding a Software Delay, by preventing systemd from waiting f
   Edit `/etc/kernel/cmdline` and add the following kernel parameters to the end of the `.conf` file:
   
   ```
-  quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm_tis.interrupts=0 8250.nr_uarts=0 i915.modeset=1
+  quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm_tis.interrupts=0 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.enable_guc=3
   ```
   
   Run the following command to rebuild the image and "bake" these new flags into the UKI.
