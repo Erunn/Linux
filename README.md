@@ -196,6 +196,12 @@ After saving, disable the old wpa_supplicant service to prevent conflicts:
 sudo systemctl disable --now wpa_supplicant.service
 ```
 
+And enable the iwd service:
+
+```
+sudo systemctl enable --now iwd.service
+```
+
 #### iwd Cheat Sheet (iwctl)
 
 Quick scan and list:
@@ -227,7 +233,7 @@ iwctl --passphrase "YOUR_PASSWORD" station wlan0 connect "YOUR_SSID"
   
   ### 3. Systemd: TPM & Security Masking
   
-If you suse a standard BTFRS partition without LUKS encryption, the 5+ second delay caused by the system polling the TPM 2.0 can be eliminated by masking the relevant services.
+If you use a standard Btfrs partition without LUKS encryption, the 5+ second delay caused by the system polling the TPM 2.0 can be eliminated by masking the relevant services.
 This way, we are avoiding a Software Delay, by preventing systemd from waiting for the chip to initialize
   
   ```
@@ -387,7 +393,7 @@ If you experience flickering, change the parameter to `i915.enable_psr=0`. It co
   Edit `/etc/kernel/cmdline` and add the following kernel parameters to the end of the `.conf` file:
   
   ```
-  quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm_tis.interrupts=0 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.enable_guc=3
+  quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm_tis.interrupts=0 tpm_tis.force=0 modprobe.blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.enable_guc=3
   ```
   
   Run the following command to rebuild the image and "bake" these new flags into the UKI.
@@ -421,7 +427,7 @@ If you experience flickering, change the parameter to `i915.enable_psr=0`. It co
   HOOKS=(microcode systemd autodetect modconf kms keyboard sd-vconsole block filesystems)
   ```
   
-  Run the following command to "bake" "bake" these hooks into the .efi binary that the BIOS actually executes.
+  Run the following command to "bake" these hooks into the .efi binary that the BIOS actually executes.
   
   ```
   sudo mkinitcpio -P
