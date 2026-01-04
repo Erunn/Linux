@@ -100,6 +100,60 @@
   ```
   
   ---
+## 🧠 Memory Management: ZRAM Optimization
+
+Since this setup utilizes Btrfs on an NVMe SSD, ZRAM is used instead of a traditional swap partition/file. This creates a compressed swap device in RAM, which is significantly faster than swapping to disk and extends the lifespan of the SSD.
+
+### 1. Disable ZSwap
+
+ZSwap is a kernel feature that acts as a cache for a disk-based swap. Since we are using ZRAM, ZSwap is redundant and can be disabled via the kernel parameter included in your cmdline (check `/etc/kernel/cmdline`):
+
+```
+zswap.enabled=0
+```
+
+## 2. Install and Configure zram-generator
+
+I use zram-generator because it is written in Rust, extremely lightweight, and integrates directly with systemd.
+
+```
+yay -S zram-generator
+```
+
+To configure it, create / edit `/etc/systemd/zram-generator.conf`, and add the following:
+
+```
+[zram0]
+zram-size = ram / 2
+compression-algorithm = zstd
+swap-priority = 100
+fs-type = swap
+```
+
+### 3. Tuning Swappiness
+
+To ensure the system uses the compressed ZRAM effectively before touching the disk, we adjust the kernel's swappiness.
+
+To do that, create / edit `/etc/sysctl.d/99-vm-zram-parameters.conf`,  and add the following:
+
+```
+vm.swappiness = 180
+vm.watermark_boost_factor = 0
+vm.watermark_scale_factor = 125
+vm.page-cluster = 0
+```
+
+### 4. Verification
+
+After a reboot, verify that your ZRAM is active and using the zstd algorithm:
+
+```
+zramctl
+```
+
+You should see /dev/zram0 listed with a high compression ratio.
+
+  ---
   
   ## ⚡ System Optimization & Power Efficiency
   
