@@ -28,7 +28,7 @@
   `yay` is the recommended AUR helper for easily installing, updating, and managing packages from the Arch User Repository (AUR).
   
   ```
-  sudo pacman -S --needed git base-devel && git clone [https://aur.archlinux.org/yay.git](https://aur.archlinux.org/yay.git) && cd yay && makepkg -si
+  sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
   ```
   
   After installation, initialize the database:
@@ -129,6 +129,8 @@ compression-algorithm = zstd
 swap-priority = 100
 fs-type = swap
 ```
+
+For systems with 8 GB RAM, consider ram / 3 instead of ram / 2.
 
 ### 3. Tuning Swappiness
 
@@ -293,7 +295,7 @@ This way, we are avoiding a Software Delay, by preventing systemd from waiting f
   This comprehensive command updates the system, removes orphaned packages and their unused dependencies, and cleans the package cache, keeping only installed packages.
   
   ```
-  sudo rm -rf /var/cache/pacman/pkg/download-* && yay -Syu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
+  sudo paccache -rk1 && sudo paccache -ruk0 && yay -Syu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
   ```
   
   ### 2. Enable SSD TRIM
@@ -404,7 +406,7 @@ If you experience flickering, change the parameter to `i915.enable_psr=0`. It co
   
   ### 2. Initramfs Configuration (`mkinitcpio.conf`)
   
-  The `initramfs` is a small environment that loads the hardware drivers needed to mount the root file system. This is an optimized hooks, in order to prioritize stability and boot speed.
+  The `initramfs` is a small environment that loads the hardware drivers needed to mount the root file system. This is an optimized hook set, in order to prioritize stability and boot speed.
   
   | Hook | Function | Impact |
   | :--- | :--- | :--- |
