@@ -379,8 +379,11 @@ This way, we are avoiding a Software Delay, by preventing systemd from waiting f
 | `i915.enable_guc=3` | GuC/HuC Loading | Offloads media/power tasks to specialized firmware. |
 
 > [!IMPORTANT]
-> Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
-  
+> a) Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
+> b) On some T480s panels (depending on whether you have the LG or Innolux display), **PSR** can occasionally cause a tiny "stutter" or flicker when moving the mouse after a pause.
+If you experience flickering, change the parameter to `i915.enable_psr=0`. It costs about **0.5W** of power but fixes the flicker instantly.
+> c) Since you are enabling **GuC/HuC** (`i915.enable_guc=3`), the `linux-firmware` package is required, to allow the GPU to handle its own power management and video decoding more efficiently.
+
   Edit `/etc/kernel/cmdline` and add the following kernel parameters to the end of the `.conf` file:
   
   ```
