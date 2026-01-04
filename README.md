@@ -295,7 +295,7 @@ This way, we are avoiding a Software Delay, by preventing systemd from waiting f
   This comprehensive command updates the system, removes orphaned packages and their unused dependencies, and cleans the package cache, keeping only installed packages.
   
   ```
-  sudo paccache -rk1 && sudo paccache -ruk0 && yay -Syu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
+  sudo pacman -Sc --noconfirm && yay -Syu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
   ```
   
   ### 2. Enable SSD TRIM
