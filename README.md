@@ -365,75 +365,86 @@ This way, we are avoiding a Software Delay, by preventing systemd from waiting f
   
   ---
   
-  ## 🖥️ User Experience & Boot
+## 🖥️ User Experience & Boot
   
-  ### 1. Optimized Kernel Boot Parameters
+### 1. Optimized Kernel Boot Parameters
   
-  These flags focus on silencing the console and skipping unnecessary hardware timeouts.
+The Linux kernel’s behavior at startup is governed by boot-time parameters. By default, Linux is very talkative and cautious, so for this build, the command line has been tuned with three primary objectives:
+
+**Look Better:** Stops the "text wall" and flashing during boot so you get a clean, smooth transition to your desktop.
+
+**Boot Faster:** Tells the computer to stop searching for old hardware that the T480s doesn't even have (like old serial ports).
+
+**Save Battery:** Forces your hardware (SSD, Wi-Fi, and GPU) to take "micro-naps" whenever you aren't moving the mouse, which adds up to significantly more battery life.
   
-| Parameter | Function | Impact |
+| Parameter | Function | Benefit |
 | :--- | :--- | :--- |
-| `quiet` | Suppresses kernel logs | Cleaner, flicker-free boot experience. |
-| `splash` | Enables Boot Splash | Prepares the system to show a splash image/logo. |
-| `loglevel=3` | Error Filtering | Only shows critical system errors; hides non-essential warnings. |
-| `rd.systemd.show_status=auto` | Smart Status | Hides "Started [Service Name]" messages unless a service fails. |
-| `rd.udev.log_priority=3` | Udev Silence | Prevents hardware discovery logs from cluttering the screen. |
-| `tpm_tis.interrupts=0` | TPM Interrupt Fix | Fixes a specific ThinkPad hardware hang during TPM interrupt probing. |
-| `modprobe.blacklist=tpm_tis,tpm_tis_core` | TPM Driver Blacklist | **Extreme Optimization:** Prevents the TPM driver from loading, saving ~2.6s of device wait time. |
-| `8250.nr_uarts=0` | Disable Serial Probing | Skips the search for legacy 9-pin serial ports. |
-| `i915.modeset=1` | Early KMS | Forces Intel graphics to load early to match native screen resolution. |
-| `i915.enable_fbc=1` | Frame Buffer Compression | Reduces memory bandwidth/power usage. |
-| `i915.enable_psr=1` | Panel Self Refresh | Allows GPU to sleep when the screen is static. |
-| `i915.enable_guc=3` | GuC/HuC Loading | Offloads media/power tasks to specialized firmware. |
+| `quiet` | Minimal Boot Verbosity | Removes the "wall of text" during startup for a cleaner look. |
+| `splash` | Boot Splash Support | Allows the use of a graphical boot logo (like Plymouth/BGRT). |
+| `loglevel=3` | Error Suppression | Filters out non-critical kernel "noise" while keeping errors visible. |
+| `rd.systemd.show_status=auto` | Smart Service Status | Only shows systemd service logs if a service fails to start. |
+| `rd.udev.log_priority=3` | Udev Verbosity Control | Hides hardware initialization logs for a seamless transition to the desktop. |
+| `tpm_tis.interrupts=0` | TPM Polling Fix | Prevents the system from hanging while waiting for TPM interrupts. |
+| `modprobe.blacklist=tpm_tis,tpm_tis_core` | TPM Hard-Block | Speeds up boot by preventing the TPM driver from loading. |
+| `8250.nr_uarts=0` | Skip Serial Scan | Disables searching for non-existent legacy RS-232 COM ports. |
+| `i915.modeset=1` | Early KMS | Prevents screen "flashing" by initializing the GPU before the desktop loads. |
+| `i915.enable_fbc=1` | Framebuffer Compression | Saves power by compressing the image stored in video memory. |
+| `i915.enable_psr=1` | Panel Self Refresh | Allows the GPU to enter a low-power "nap" when the screen is static. |
+| `i915.enable_guc=3` | GuC/HuC Firmware | Offloads video decoding and power management to dedicated GPU microcontrollers. |
+| `pcie_aspm=force` | Aggressive PCIe Power | Forces NVMe and Wi-Fi into low-power states. |
+| `nvme_core.default_ps_max_latency_us=5500` | NVMe PS4/PS5 Sleep | Enables deepest SSD sleep states with a "sweet spot" latency for stability. |
 
 > [!IMPORTANT]
 > a) Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
+> 
 > b) On some T480s panels (depending on whether you have the LG or Innolux display), **PSR** can occasionally cause a tiny "stutter" or flicker when moving the mouse after a pause.
 If you experience flickering, change the parameter to `i915.enable_psr=0`. It costs about **0.5W** of power but fixes the flicker instantly.
 > c) Since you are enabling **GuC/HuC** (`i915.enable_guc=3`), the `linux-firmware` package is required, to allow the GPU to handle its own power management and video decoding more efficiently.
 
-  Edit `/etc/kernel/cmdline` and add the following kernel parameters to the end of the `.conf` file:
+To apply these changes, ensure your kernel command line is updated and you regenerate your initramfs:
+
+Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
   
-  ```
-  quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm_tis.interrupts=0 tpm_tis.force=0 modprobe.blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.enable_guc=3
-  ```
+```
+quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm_tis.interrupts=0 tpm_tis.force=0 modprobe.blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.enable_guc=3 pcie_aspm=force nvme_core.default_ps_max_latency_us=5500
+```
   
-  Run the following command to rebuild the image and "bake" these new flags into the UKI.
+Run the following command to rebuild the image and apply these new flags into the UKI.
   
-  ```
-  sudo mkinitcpio -P
-  ```
+```
+sudo mkinitcpio -P
+```
   
-  ### 2. Initramfs Configuration (`mkinitcpio.conf`)
+### 2. Initramfs Configuration (`mkinitcpio.conf`)
   
-  The `initramfs` is a small environment that loads the hardware drivers needed to mount the root file system. This is an optimized hook set, in order to prioritize stability and boot speed.
+The `initramfs` is a small environment that loads the hardware drivers needed to mount the root file system. This is an optimized hook set, in order to prioritize stability and boot speed.
   
-  | Hook | Function | Impact |
-  | :--- | :--- | :--- |
-  | **`microcode`** | CPU Patching | **Critical:** Must be first. Patches Intel CPU bugs before the image is unpacked. |
-  | **`systemd`** | Init Controller | Replaces the legacy `base` hook for a faster, parallelized boot process. |
-  | **`autodetect`** | Image Shrinker | Scans the T480s hardware to keep the boot image as small as possible. |
-  | **`modconf`** | Module Config | Includes custom driver configurations (like undervolting or GPU tweaks). |
-  | **`kms`** | Graphics Setup | Enables Early Kernel Mode Setting for a flicker-free transition to the GUI. |
-  | **`keyboard`** | Input Support | Ensures the laptop keyboard works during the very early stages of boot. |
-  | **`sd-vconsole`** | Virtual Console | Sets the correct system font and keyboard layout for the terminal. |
-  | **`block`** | Storage Drivers | Provides the necessary drivers to communicate with the NVMe SSD. |
-  | **`filesystems`** | FS Support | Allows the kernel to mount and read the **Btrfs** root partition. |
+| Hook | Function | Impact |
+| :--- | :--- | :--- |
+| **`microcode`** | CPU Patching | **Critical:** Must be first. Patches Intel CPU bugs before the image is unpacked. |
+| **`systemd`** | Init Controller | Replaces the legacy `base` hook for a faster, parallelized boot process. |
+| **`autodetect`** | Image Shrinker | Scans the T480s hardware to keep the boot image as small as possible. |
+| **`modconf`** | Module Config | Includes custom driver configurations (like undervolting or GPU tweaks). |
+| **`kms`** | Graphics Setup | Enables Early Kernel Mode Setting for a flicker-free transition to the GUI. |
+| **`keyboard`** | Input Support | Ensures the laptop keyboard works during the very early stages of boot. |
+| **`sd-vconsole`** | Virtual Console | Sets the correct system font and keyboard layout for the terminal. |
+| **`block`** | Storage Drivers | Provides the necessary drivers to communicate with the NVMe SSD. |
+| **`filesystems`** | FS Support | Allows the kernel to mount and read the **Btrfs** root partition. |
 
 > [!IMPORTANT]
 > The fsck hook has been removed. Since this setup uses Btrfs, the standard fsck is unnecessary; removing it prevents cosmetic "exit status 8" errors in the boot logs.
   
-  Edit `/etc/mkinitcpio.conf` and edit the hooks line, to look like this:
+Edit `/etc/mkinitcpio.conf` and edit the hooks line, to look like this:
   
-  ```
-  HOOKS=(microcode systemd autodetect modconf kms keyboard sd-vconsole block filesystems)
-  ```
+```
+HOOKS=(microcode systemd autodetect modconf kms keyboard sd-vconsole block filesystems)
+```
+
+Run the following command to "bake" these hooks into the .efi binary that the BIOS actually executes.
   
-  Run the following command to "bake" these hooks into the .efi binary that the BIOS actually executes.
-  
-  ```
-  sudo mkinitcpio -P
-  ```
+```
+sudo mkinitcpio -P
+```
   
   ### 3. Custom Command Widget - Battery Stats
   
