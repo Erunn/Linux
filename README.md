@@ -1,49 +1,37 @@
 # 🚀 Arch Linux Minimal & Optimized Setup (T480s)
 
-This repository serves as a comprehensive guide and reference for configuring a high-performance, power-efficient, and lightweight Arch Linux environment. While designed specifically for the **ThinkPad T480s**, the optimizations here are applicable to many Intel-based laptops.
+This repository serves as a comprehensive guide for configuring a high-performance, power-efficient, and lightweight Arch Linux environment. Tuned specifically for a modified **ThinkPad T480s**, these optimizations focus on achieving a sub-4W idle draw while maintaining a modern Wayland-based workflow.
 
 ### 🎯 Project Goals
-
-* **Maximizing Battery:** Leveraging advanced kernel parameters (ASPM, PSR, GuC) and hardware-level hardening to maximize battery endurance.
-* **Modern Wayland Stack:** Using **LabWC** (Openbox-inspired Wayland compositor) and **LXQt** for a footprint that is significantly lighter than GNOME or KDE.
-* **Instant Responsiveness:** Optimized memory management via **ZRAM** and a streamlined **initramfs** for near-instant boot times and smooth multitasking.
+* **Maximizing Battery:** Leveraging advanced kernel parameters (ASPM, PSR, GuC) and hardware-level hardening to reach extreme battery runtimes.
+* **Modern Wayland Stack:** Using **LabWC** and **LXQt** for a footprint significantly lighter than GNOME or KDE.
+* **Instant Responsiveness:** Optimized memory management via **ZRAM** and a streamlined **initramfs** for near-instant boot times.
 * **Minimalist Maintenance:** A "zero-bloat" approach to system updates and package management.
 
 ### 💰 Build Value & Cost Breakdown
-
 | Item | Description | Cost |
 | :--- | :--- | :--- |
-| **ThinkPad T480s** | i5-8250U 16GB RAM 256GB SSD | 229,80€ |
+| **ThinkPad T480s** | i5-8250U, 16GB RAM, 256GB SSD | 229,80€ |
 | **Panel Upgrade** | AUO B140HAN06.B (400 nits, 100% sRGB) | 83,48€ |
 | **Glass Trackpad** | X1 Extreme / P1 Glass Trackpad | 21,17€ |
 | **Wi-Fi 6E Mod** | Intel AX210 Gig+ Module | 15,79€ |
+| **Total Build** |  | **350,24€** |
 
 ---
 
 ## 📖 Table of Contents
-
-1.  [🔒 BIOS / Firmware Configuration](#-bios--firmware-configuration-hardening--power)
-2.  [🛠️ Installation & Setup](#️-installation--setup)
-    * [1. AUR Helper (yay)](#1-install-yay-aur-helper)
-    * [2. Core Software Stack](#2-install-core-software)
-    * [3. Typography & Fonts](#3-install-fonts)
-3.  [🧠 Memory Management: ZRAM Optimization](#-memory-management-zram-optimization)
-    * [Tuning Swappiness & Watermarks](#3-tuning-swappiness)
-4.  [⚡ System Optimization & Power Efficiency](#-system-optimization--power-efficiency)
-    * [1. Wayland Environment Variables](#1-wayland-environment-variables)
-    * [2. Wireless Networking (iwd)](#2-wireless-networking-with-iwd-inet-wireless-daemon)
-    * [3. Graphics & TPM Hardening](#3-systemd-tpm--security-masking)
-5.  [🖥️ User Experience & Boot](#️-user-experience--boot)
-    * [1. Optimized Kernel Boot Parameters](#1-optimized-kernel-boot-parameters)
-    * [2. Initramfs (mkinitcpio) Configuration](#2-initramfs-configuration-mkinitcpioconf)
-6.  [💻 System Maintenance](#-system-maintenance)
-    * [Package Cleanup & SSD Health](#1-full-system-update--cleanup)
-7.  [🔍 System Analysis & Debugging](#-system-analysis--debugging)
-8.  [🎨 Theming (Catppuccin)](#-theming)
+1. [🔒 BIOS / Firmware Configuration](#-bios--firmware-configuration-hardening--power)
+2. [🛠️ Installation & Setup](#️-installation--setup)
+3. [🧠 Memory Management (ZRAM)](#-memory-management-zram-optimization)
+4. [⚡ System & Power Optimization](#-system-optimization--power-efficiency)
+5. [🖥️ User Experience & Boot](#️-user-experience--boot)
+6. [🛠️ System Maintenance](#️-system-maintenance)
+7. [🔍 Analysis & Debugging](#-system-analysis--debugging)
+8. [🎨 Theming](#-theming)
 
 ---
   
-## 🔒 BIOS / Firmware Configuration (Hardening & Power)
+## 🔒 BIOS / Firmware Configuration
   
 Apply these settings in your system's BIOS/UEFI to improve security, reduce attack surface, and enhance power efficiency by disabling unnecessary hardware interfaces.
   
@@ -60,85 +48,85 @@ Apply these settings in your system's BIOS/UEFI to improve security, reduce atta
   
 ---
   
-  ## 🛠️ Installation & Setup
+## 🛠️ Installation & Setup
   
-  ### 1. Install `yay` (AUR Helper)
+### 1. Install `yay` (AUR Helper)
   
-  `yay` is the recommended AUR helper for easily installing, updating, and managing packages from the Arch User Repository (AUR).
+`yay` is the recommended AUR helper for easily installing, updating, and managing packages from the Arch User Repository (AUR).
   
-  ```
-  sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
-  ```
+```
+sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
+```
   
-  After installation, initialize the database:
+After installation, initialize the database:
   
-  ```
-  yay -Y --gendb
-  ```
+```
+yay -Y --gendb
+```
   
-  ### 2. Install Core Software
+### 2. Install Core Software
   
-  Use `yay` to install the essential packages, grouped by their function:
+Use `yay` to install the essential packages, grouped by their function:
   
-  #### 💻 Wayland / LXQt Core
+#### 💻 Wayland / LXQt Core
   
-  | Name | Purpose | Installation Command |
-  | :--- | :--- | :--- |
-  | **labwc** | Minimalist window-stacking **Wayland compositor** (core of the desktop). | `yay -S labwc` |
-  | **labwc-tweaks** | Qt-based GUI configuration tool for managing `labwc` settings and themes. | `yay -S labwc-tweaks-git` |
-  | **lxqt-wayland-session** | Provides necessary files to launch the LXQt session under Wayland. | `yay -S lxqt-wayland-session` |
-  | **qt5-declarative** | Development files for **Qt 5's QML/declarative framework**. | `yay -S qt5-declarative` |
+| Name | Purpose | Installation Command |
+| :--- | :--- | :--- |
+| **labwc** | Minimalist window-stacking **Wayland compositor** (core of the desktop). | `yay -S labwc` |
+| **labwc-tweaks** | Qt-based GUI configuration tool for managing `labwc` settings and themes. | `yay -S labwc-tweaks-git` |
+| **lxqt-wayland-session** | Provides necessary files to launch the LXQt session under Wayland. | `yay -S lxqt-wayland-session` |
+| **qt5-declarative** | Development files for **Qt 5's QML/declarative framework**. | `yay -S qt5-declarative` |
   
-  #### 🖥️ Display & Output Control
+#### 🖥️ Display & Output Control
   
-  | Name | Purpose | Installation Command |
-  | :--- | :--- | :--- |
-  | **brightnessctl** | Lightweight tool to read and control **device backlight** (monitor brightness). | `yay -S brightnessctl` |
-  | **kanshi** | Dynamic output configuration manager for Wayland (automatically switches display profiles). | `yay -S kanshi` |
-  | **swayidle** | Idle management daemon (used for locking the screen or turning off monitors). | `yay -S swayidle` |
-  | **waylock** | Simple **screen locker** for Wayland compositors. | `yay -S waylock` |
-  | **wdisplays** | Graphical utility for configuring display outputs (resolution, position, rotation). | `yay -S wdisplays` |
-  | **wlopm** | Wayland output power management (allows turning monitors on/off via CLI). | `yay -S wlopm` |
-  | **wlsunset** | Day/night gamma mask for Wayland (Blue light filter). | `yay -S wlsunset` |
+| Name | Purpose | Installation Command |
+| :--- | :--- | :--- |
+| **brightnessctl** | Lightweight tool to read and control **device backlight** (monitor brightness). | `yay -S brightnessctl` |
+| **kanshi** | Dynamic output configuration manager for Wayland (automatically switches display profiles). | `yay -S kanshi` |
+| **swayidle** | Idle management daemon (used for locking the screen or turning off monitors). | `yay -S swayidle` |
+| **waylock** | Simple **screen locker** for Wayland compositors. | `yay -S waylock` |
+| **wdisplays** | Graphical utility for configuring display outputs (resolution, position, rotation). | `yay -S wdisplays` |
+| **wlopm** | Wayland output power management (allows turning monitors on/off via CLI). | `yay -S wlopm` |
+| **wlsunset** | Day/night gamma mask for Wayland (Blue light filter). | `yay -S wlsunset` |
   
-  #### ⚙️ System Utilities & Services
+#### ⚙️ System Utilities & Services
   
-  | Name | Purpose | Installation Command |
-  | :--- | :--- | :--- |
-  | **bluez & blueman** | The official Linux Bluetooth stack and the GTK+ Bluetooth Manager (GUI). | `yay -S bluez blueman` |
-  | **fwupd** | Daemon to manage the installation of **firmware updates** (UEFI/Capsule). | `yay -S fwupd` |
-  | **gvfs** | GNOME Virtual File System for accessing remote filesystems (SFTP, SMB). | `yay -S gvfs` |
-  | **nm-tray** | Simple **Qt-based NetworkManager frontend** that resides in the system tray. | `yay -S nm-tray` |
-  | **stress-ng** | Tool to stress test a computer system for stability and debugging. | `yay -S stress-ng` |
-  | **unzip** | Extraction utility for compressed **.zip** archives. | `yay -S unzip` |
+| Name | Purpose | Installation Command |
+| :--- | :--- | :--- |
+| **bluez & blueman** | The official Linux Bluetooth stack and the GTK+ Bluetooth Manager (GUI). | `yay -S bluez blueman` |
+| **fwupd** | Daemon to manage the installation of **firmware updates** (UEFI/Capsule). | `yay -S fwupd` |
+| **gvfs** | GNOME Virtual File System for accessing remote filesystems (SFTP, SMB). | `yay -S gvfs` |
+| **nm-tray** | Simple **Qt-based NetworkManager frontend** that resides in the system tray. | `yay -S nm-tray` |
+| **stress-ng** | Tool to stress test a computer system for stability and debugging. | `yay -S stress-ng` |
+| **unzip** | Extraction utility for compressed **.zip** archives. | `yay -S unzip` |
   
-  #### ⚡ Power & Hardware Management
+#### ⚡ Power & Hardware Management
   
-  | Name | Purpose | Installation Command |
-  | :--- | :--- | :--- |
-  | **intel-ucode** | Critical **Intel processor microcode updates** for security and bug fixes. | `yay -S intel-ucode` |
-  | **intel-undervolt** | Utility for **undervolting Intel CPUs** to reduce heat and improve power efficiency. | `yay -S intel-undervolt` |
-  | **TLP & TLPUI** | Feature-rich power management tool and its GTK graphical user interface. | `yay -S tlp tlp-rdw tlpui` |
+| Name | Purpose | Installation Command |
+| :--- | :--- | :--- |
+| **intel-ucode** | Critical **Intel processor microcode updates** for security and bug fixes. | `yay -S intel-ucode` |
+| **intel-undervolt** | Utility for **undervolting Intel CPUs** to reduce heat and improve power efficiency. | `yay -S intel-undervolt` |
+| **TLP & TLPUI** | Feature-rich power management tool and its GTK graphical user interface. | `yay -S tlp tlp-rdw tlpui` |
   
-  #### 📝 Desktop Applications
+#### 📝 Desktop Applications
   
-  | Name | Purpose | Installation Command |
-  | :--- | :--- | :--- |
-  | **featherpad** | Lightweight, independent Qt text editor. | `yay -S featherpad` |
-  | **qalculate-qt** | Versatile, cross-platform desktop calculator (Qt version). | `yay -S qalculate-qt` |
+| Name | Purpose | Installation Command |
+| :--- | :--- | :--- |
+| **featherpad** | Lightweight, independent Qt text editor. | `yay -S featherpad` |
+| **qalculate-qt** | Versatile, cross-platform desktop calculator (Qt version). | `yay -S qalculate-qt` |
   
-  > [!IMPORTANT]
-  > Remember to check documentation for commands required to **enable and start** services like `tlp` and `bluez`.
+> [!IMPORTANT]
+> Remember to check documentation for commands required to **enable and start** services like `tlp` and `bluez`.
   
-  ### 3. Install Fonts
+### 3. Install Fonts
   
-  Install the **Inter** font family and the **Nerd Fonts Symbols** package for comprehensive glyph and icon support.
+Install the **Inter** font family and the **Nerd Fonts Symbols** package for comprehensive glyph and icon support.
   
-  ```
-  yay -S inter-font ttf-nerd-fonts-symbols
-  ```
+```
+yay -S inter-font ttf-nerd-fonts-symbols
+```
   
-  ---
+---
 ## 🧠 Memory Management: ZRAM Optimization
 
 Since this setup utilizes Btrfs on an NVMe SSD, ZRAM is used instead of a traditional swap partition/file. This creates a compressed swap device in RAM, which is significantly faster than swapping to disk and extends the lifespan of the SSD.
