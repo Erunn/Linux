@@ -283,7 +283,8 @@ systemd-tpm2-setup.service \
 systemd-pcrproduct.service \
 systemd-pcrphase.service \
 systemd-pcrphase-sysinit.service \
-systemd-pcrmachine.service
+systemd-pcrmachine.service \
+tpm2.target
 ```
 
 > [!IMPORTANT]
@@ -298,6 +299,7 @@ By default, some systems wait for a confirmed internet connection before reachin
   
 ```
 sudo systemctl mask NetworkManager-wait-online.service
+sudo systemctl mask systemd-networkd-wait-online.service
 ```
 
 **Disable accessibility bus services (User level)**
