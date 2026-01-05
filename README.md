@@ -1,25 +1,54 @@
-  # 🚀 Arch Linux Minimal & Optimized Laptop Setup (LXQt/LabWC)
+# 🚀 Arch Linux Minimal & Optimized Setup (T480s)
+
+This repository serves as a comprehensive guide and reference for configuring a high-performance, power-efficient, and lightweight Arch Linux environment. While designed specifically for the **ThinkPad T480s**, the optimizations here are applicable to many Intel-based laptops.
+
+### 🎯 Project Goals
+* **Sub-4W Idle Draw:** Leveraging advanced kernel parameters (ASPM, PSR, GuC) and hardware-level hardening to maximize battery endurance.
+* **Modern Wayland Stack:** Using **LabWC** (Openbox-inspired Wayland compositor) and **LXQt** for a footprint that is significantly lighter than GNOME or KDE.
+* **Instant Responsiveness:** Optimized memory management via **ZRAM** and a streamlined **initramfs** for near-instant boot times and smooth multitasking.
+* **Minimalist Maintenance:** A "zero-bloat" approach to system updates and package management.
+
+---
+
+## 📖 Table of Contents
+
+1.  [🔒 BIOS / Firmware Configuration](#-bios--firmware-configuration-hardening--power)
+2.  [🛠️ Installation & Setup](#️-installation--setup)
+    * [1. AUR Helper (yay)](#1-install-yay-aur-helper)
+    * [2. Core Software Stack](#2-install-core-software)
+    * [3. Typography & Fonts](#3-install-fonts)
+3.  [🧠 Memory Management: ZRAM Optimization](#-memory-management-zram-optimization)
+    * [Tuning Swappiness & Watermarks](#3-tuning-swappiness)
+4.  [⚡ System Optimization & Power Efficiency](#-system-optimization--power-efficiency)
+    * [1. Wayland Environment Variables](#1-wayland-environment-variables)
+    * [2. Wireless Networking (iwd)](#2-wireless-networking-with-iwd-inet-wireless-daemon)
+    * [3. Graphics & TPM Hardening](#3-systemd-tpm--security-masking)
+5.  [🖥️ User Experience & Boot](#️-user-experience--boot)
+    * [1. Optimized Kernel Boot Parameters](#1-optimized-kernel-boot-parameters)
+    * [2. Initramfs (mkinitcpio) Configuration](#2-initramfs-configuration-mkinitcpioconf)
+6.  [💻 System Maintenance](#-system-maintenance)
+    * [Package Cleanup & SSD Health](#1-full-system-update--cleanup)
+7.  [🔍 System Analysis & Debugging](#-system-analysis--debugging)
+8.  [🎨 Theming (Catppuccin)](#-theming)
+
+---
   
-  This document outlines the configuration, installations, and maintenance commands for setting up a power-efficient and lightweight Arch Linux system using the **LXQt** desktop environment on the **LabWC** Wayland compositor.
+## 🔒 BIOS / Firmware Configuration (Hardening & Power)
   
-  ---
+Apply these settings in your system's BIOS/UEFI to improve security, reduce attack surface, and enhance power efficiency by disabling unnecessary hardware interfaces.
   
-  ## 🔒 BIOS / Firmware Configuration (Hardening & Power)
+| BIOS Section | Setting | Recommended Value |
+| :--- | :--- | :--- |
+| **Config -> Thunderbolt (TM) 3** | Thunderbolt BIOS Assist Mode | **Disabled** |
+| **Config -> Network** | Wake On LAN | **Disabled** |
+| **Config -> Network** | Wake On LAN from Dock | **Disabled** |
+| **Security -> I/O Port Access** | Ethernet LAN | **Disabled** |
+| **Security -> I/O Port Access** | Wireless WAN | **Disabled** |
+| **Security -> I/O Port Access** | Memory Card Slot | **Disabled** |
+| **Security -> I/O Port Access** | Smart Card Slot | **Disabled** |
+| **Security -> I/O Port Access** | Thunderbolt (TM) 3 | **Disabled** |
   
-  Apply these settings in your system's BIOS/UEFI to improve security, reduce attack surface, and enhance power efficiency by disabling unnecessary hardware interfaces.
-  
-  | BIOS Section | Setting | Recommended Value |
-  | :--- | :--- | :--- |
-  | **Config -> Thunderbolt (TM) 3** | Thunderbolt BIOS Assist Mode | **Disabled** |
-  | **Config -> Network** | Wake On LAN | **Disabled** |
-  | **Config -> Network** | Wake On LAN from Dock | **Disabled** |
-  | **Security -> I/O Port Access** | Ethernet LAN | **Disabled** |
-  | **Security -> I/O Port Access** | Wireless WAN | **Disabled** |
-  | **Security -> I/O Port Access** | Memory Card Slot | **Disabled** |
-  | **Security -> I/O Port Access** | Smart Card Slot | **Disabled** |
-  | **Security -> I/O Port Access** | Thunderbolt (TM) 3 | **Disabled** |
-  
-  ---
+---
   
   ## 🛠️ Installation & Setup
   
