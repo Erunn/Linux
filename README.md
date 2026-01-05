@@ -200,7 +200,7 @@ Set these environment variables in your LXQt Session Settings for maximum perfor
 | `GDK_BACKEND` | `wayland` | Tells GTK applications to prefer the native Wayland backend. |
 | `GTK_MODULES` | `""` | Prevents GTK from searching for legacy/accessibility modules. |
 | `NO_AT_BRIDGE` | `1` | Disables the AT-SPI accessibility bus to reduce launch lag and overhead. |
-| `LIBVA_DRIVER_NAME` | `iHD` | Disables the AT-SPI accessibility bus to reduce launch lag and overhead. |
+| `LIBVA_DRIVER_NAME` | `iHD` | Offloads video decoding (VP9/HEVC) to the dedicated GPU hardware, allowing the CPU to remain idle. |
 
 
 ### 2. Wireless Networking with iwd (iNet Wireless Daemon)
