@@ -379,7 +379,7 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. By
   
 | Parameter | Function | Benefit |
 | :--- | :--- | :--- |
-| `quiet` | Minimal Boot Verbosity | Removes the "wall of text" during startup for a cleaner look. |
+| **`quiet`** | Minimal Boot Verbosity | Removes the "wall of text" during startup for a cleaner look. |
 | `splash` | Boot Splash Support | Allows the use of a graphical boot logo (like Plymouth/BGRT). |
 | `loglevel=3` | Error Suppression | Filters out non-critical kernel "noise" while keeping errors visible. |
 | `rd.systemd.show_status=auto` | Smart Service Status | Only shows systemd service logs if a service fails to start. |
@@ -399,6 +399,7 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. By
 > 
 > b) On some T480s panels (depending on whether you have the LG or Innolux display), **PSR** can occasionally cause a tiny "stutter" or flicker when moving the mouse after a pause.
 If you experience flickering, change the parameter to `i915.enable_psr=0`. It costs about **0.5W** of power but fixes the flicker instantly.
+> 
 > c) Since you are enabling **GuC/HuC** (`i915.enable_guc=3`), the `linux-firmware` package is required, to allow the GPU to handle its own power management and video decoding more efficiently.
 
 To apply these changes, ensure your kernel command line is updated and you regenerate your initramfs:
