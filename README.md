@@ -322,7 +322,8 @@ AutoEnable=false
 > If it has a # at the beginning of the line, just delete the # to "uncomment" it.
 
 ---
-## 🧠 Memory Management
+
+## 🖥️ User Experience & Boot
 
 
 
