@@ -200,6 +200,8 @@ Set these environment variables in your LXQt Session Settings for maximum perfor
 | `GDK_BACKEND` | `wayland` | Tells GTK applications to prefer the native Wayland backend. |
 | `GTK_MODULES` | `""` | Prevents GTK from searching for legacy/accessibility modules. |
 | `NO_AT_BRIDGE` | `1` | Disables the AT-SPI accessibility bus to reduce launch lag and overhead. |
+| `LIBVA_DRIVER_NAME` | `iHD` | Disables the AT-SPI accessibility bus to reduce launch lag and overhead. |
+
 
 ### 2. Wireless Networking with iwd (iNet Wireless Daemon)
 
@@ -344,7 +346,6 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`loglevel=3`** | Error Suppression | Filters out non-critical kernel "noise" while keeping errors visible. |
 | **`rd.systemd.show_status=auto`** | Smart Service Status | Only shows systemd service logs if a service fails to start. |
 | **`rd.udev.log_priority=3`** | Udev Verbosity Control | Hides hardware initialization logs for a seamless transition to the desktop. |
-| **`tpm_tis.interrupts=0`** | TPM Polling Fix | Prevents the system from hanging while waiting for TPM interrupts. |
 | **`module_blacklist=tpm_tis,tpm_tis_core`** | TPM Hard-Block | Speeds up boot by preventing the TPM driver from loading. |
 | **`8250.nr_uarts=0`** | Skip Serial Scan | Disables searching for non-existent legacy RS-232 COM ports. |
 | **`i915.modeset=1`** | Early KMS | Prevents screen "flashing" by initializing the GPU before the desktop loads. |
@@ -352,6 +353,7 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`i915.enable_psr=1`** | Panel Self Refresh | Allows the GPU to enter a low-power "nap" when the screen is static. |
 | **`i915.enable_guc=3`** | GuC/HuC Firmware | Offloads video decoding and power management to dedicated GPU microcontrollers. |
 | **`pcie_aspm=force`** | Aggressive PCIe Power | Forces NVMe and Wi-Fi into low-power states. |
+| **`transparent_hugepage=never`** | Prevents `khugepaged` background CPU wakeups and reduces memory "bloat." Standard 4KB pages provide better granularity for ZRAM compression and lower latency in a desktop (Wayland) environment. |
 | **`nvme_core.default_ps_max_latency_us=5500`** | NVMe PS4/PS5 Sleep | Enables deepest SSD sleep states with a "sweet spot" latency for stability. |
 
 > [!IMPORTANT]
@@ -367,7 +369,7 @@ To apply these changes, ensure your kernel command line is updated and you regen
 **a)** Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
   
 ```
-quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm_tis.interrupts=0 tpm_tis.force=0 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.enable_guc=3 pcie_aspm=force nvme_core.default_ps_max_latency_us=5500
+quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.enable_guc=3 pcie_aspm=force transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500
 ```
   
 **b)** Run the following command to rebuild the image and apply these new flags into the UKI.
