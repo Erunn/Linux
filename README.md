@@ -22,7 +22,7 @@ This repository serves as a comprehensive guide for configuring a high-performan
 ## 📖 Table of Contents
 1. [🔒 BIOS / Firmware Configuration](#-bios--firmware-configuration-hardening--power)
 2. [🛠️ Installation & Setup](#️-installation--setup)
-3. [🧠 Memory Management (ZRAM)](#-memory-management-zram-optimization)
+3. [🧠 Memory Management](#-memory-management-zram-optimization)
 4. [⚡ System & Power Optimization](#-system-optimization--power-efficiency)
 5. [🖥️ User Experience & Boot](#️-user-experience--boot)
 6. [🛠️ System Maintenance](#️-system-maintenance)
@@ -127,7 +127,7 @@ yay -S inter-font ttf-nerd-fonts-symbols
 ```
   
 ---
-## 🧠 Memory Management: ZRAM Optimization
+## 🧠 Memory Management
 
 Since this setup utilizes Btrfs on an NVMe SSD, ZRAM is used instead of a traditional swap partition/file. This creates a compressed swap device in RAM, which is significantly faster than swapping to disk and extends the lifespan of the SSD.
 
@@ -141,7 +141,7 @@ zswap.enabled=0
 
 ## 2. Install and Configure zram-generator
 
-I use zram-generator because it is written in Rust, extremely lightweight, and integrates directly with systemd.
+`zram-generator` is written in Rust, extremely lightweight, and integrates directly with systemd to manage ZRAM devices.
 
 ```
 yay -S zram-generator
@@ -156,14 +156,12 @@ compression-algorithm = zstd
 swap-priority = 100
 fs-type = swap
 ```
+> [!IMPORTANT]
+> For systems with 8 GB RAM, consider ram / 3 instead of ram / 2.
 
-For systems with 8 GB RAM, consider ram / 3 instead of ram / 2.
+### 3. Tuning Swappiness & VM Parameters
 
-### 3. Tuning Swappiness
-
-To ensure the system uses the compressed ZRAM effectively before touching the disk, we adjust the kernel's swappiness.
-
-To do that, create / edit `/etc/sysctl.d/99-vm-zram-parameters.conf`,  and add the following:
+To ensure the system uses the compressed ZRAM effectively before touching the disk, create or edit `/etc/sysctl.d/99-vm-zram-parameters.conf`,  and add the following:
 
 ```
 vm.swappiness = 180
@@ -174,37 +172,40 @@ vm.page-cluster = 0
 
 ### 4. Verification
 
-After a reboot, verify that your ZRAM is active and using the zstd algorithm:
+After a reboot, verify that your ZRAM is active and using the `zstd` algorithm:
 
 ```
 zramctl
 ```
 
-You should see /dev/zram0 listed with a high compression ratio.
+`/dev/zram0` shall be listed with the total swap size and the current compression ratio.
 
-  ---
+---
   
-  ## ⚡ System Optimization & Power Efficiency
+## ⚡ System & Power Optimization
+
+This section focuses on reducing the energy footprint of the software stack and maximizing the hardware efficiency of the Intel and networking components.
   
-  ### 1. Wayland Environment Variables
+### 1. Wayland Environment Variables
   
-  Set these environment variables in your LXQt Session Settings for maximum performance and battery savings on the Wayland compositor. 
+Set these environment variables in your LXQt Session Settings for maximum performance and battery savings. These ensure that applications use native Wayland protocols and hardware acceleration instead of inefficient X11 translation.
   
-  | Variable | Value | Purpose |
-  | :--- | :--- | :--- |
-  | `MOZ_ENABLE_WAYLAND` | `1` | Forces Firefox to use the native Wayland backend for maximum speed and efficiency. |
-  | `MOZ_VA_API_ALL_DRIVERS` | `1` | Forces Firefox VA-API hardware video decoding, drastically reducing **CPU load and saving battery** during video playback. |
-  | `MOZ_ENABLE_DMABUF` | `1` | Enables Firefox Direct Memory Access Buffer sharing, reducing memory copies for better rendering efficiency. |
-  | `MOZ_ACCELERATE_VSYNC` | `1` | Forces Firefox VSync to be handled by the Wayland compositor for smoother, more efficient rendering. |
-  | `QT_QPA_PLATFORM` | `wayland` | Forces Qt applications (like LXQt components) to use the native Wayland protocol for efficiency. |
-  | `GDK_BACKEND` | `wayland` | Tells GTK applications to prefer the native Wayland backend over XWayland. |
-  | `GTK_MODULES` | `""` | Prevents GTK from searching for legacy accessibility modules. |
-  | `NO_AT_BRIDGE` | `1` | Disables the AT-SPI accessibility bus to reduce overhead and launch lag. |
+| Variable | Value | Purpose |
+| :--- | :--- | :--- |
+| `MOZ_ENABLE_WAYLAND` | `1` | Forces Firefox to use native Wayland for better power efficiency. |
+| `MOZ_VA_API_ALL_DRIVERS` | `1` | Enables hardware video decoding in Firefox, drastically reducing CPU load. |
+| `MOZ_ENABLE_DMABUF` | `1` | Improves rendering efficiency for media content. |
+| `MOZ_ACCELERATE_VSYNC` | `1` | Syncs Firefox rendering with Wayland VSync to eliminate tearing/jitter. |
+| `QT_QPA_PLATFORM` | `wayland` | Forces Qt applications (LXQt) to use native Wayland protocols. |
+| `GDK_BACKEND` | `wayland` | Tells GTK applications to prefer the native Wayland backend. |
+| `GTK_MODULES` | `""` | Prevents GTK from searching for legacy/accessibility modules. |
+| `NO_AT_BRIDGE` | `1` | Disables the AT-SPI accessibility bus to reduce launch lag and overhead. |
 
 ### 2. Wireless Networking with iwd (iNet Wireless Daemon)
 
-I have replaced the default `wpa_supplicant` with `iwd`. It is written by Intel specifically for Linux, offering faster connection times, lower memory footprint, and a much cleaner command-line interface.
-`iwd`also handles the "roaming" between **2.4GHz and 5GHz** bands much more gracefully than the old `wpa_supplicant`, which helps prevent those annoying 1-second drops when moving the laptop around the house; it also significantly improves the **"Resume from Sleep"** time.
+Replacing `wpa_supplicant` with `iwd` results in faster connection times, lower memory footprint, and cleaner roaming. It significantly improves "Resume from Sleep" speed.
+
+**Configure NetworkManager to use iwd:**
 
 To use `iwd` as the backend for **NetworkManager**, create this configuration file:
 
@@ -219,19 +220,14 @@ and add the following lines:
 wifi.backend=iwd
 ```
 
-After saving, disable the old wpa_supplicant service to prevent conflicts:
+After saving, and to prevent conflicts, disable the old `wpa_supplicant` service and enable the new `iwd` one:
 
 ```
 sudo systemctl disable --now wpa_supplicant.service
-```
-
-And enable the iwd service:
-
-```
 sudo systemctl enable --now iwd.service
 ```
 
-#### iwd Cheat Sheet (iwctl)
+**iwd Cheat Sheet (iwctl)**
 
 Quick scan and list:
 
@@ -244,6 +240,91 @@ Connect to your home Wi-Fi instantly:
 ```
 iwctl --passphrase "YOUR_PASSWORD" station wlan0 connect "YOUR_SSID"
 ```
+
+### 3. CPU Undervolting (`intel-undervolt`)
+
+Lowering the voltage on the i5-8250U reduces heat and prevents thermal throttling.
+
+**Configuration:**
+
+Edit `/etc/intel-undervolt.conf`, and change the values:
+
+```
+undervolt 0 'CPU' -90
+undervolt 1 'GPU' -50
+undervolt 2 'CPU Cache' -90
+undervolt 3 'System Agent' 0
+undervolt 4 'Analog I/O' 0
+```
+
+**Apply and enable:**
+
+```
+sudo intel-undervolt apply
+sudo systemctl enable --now intel-undervolt.service
+```
+
+> [!IMPORTANT]
+>Please note that voltage tolerance varies between individual chips (the "silicon lottery"). The values provided in this guide may not be stable for every system.
+>After applying new undervolt settings, it is highly recommended to run `stress-ng` to verify system stability under load. If you experience crashes or hangs, reduce the undervolt offset (e.g., move from -100mV to -80mV) until the system is stable.
+
+### 4. Systemd: Security & Hardware Masking
+
+Masking services prevents systemd from waiting for unnecessary hardware to initialize.
+
+**Disable delays caused by TPM polling and Network waiting**
+
+Masking these services prevents systemd from waiting for the TPM 2.0 chip to initialize, which can shave significant time off your boot process.
+
+```
+sudo systemctl mask \
+systemd-tpm2-setup-early.service \
+systemd-tpm2-setup.service \
+systemd-pcrproduct.service \
+systemd-pcrphase.service \
+systemd-pcrphase-sysinit.service \
+systemd-pcrmachine.service
+```
+
+> [!IMPORTANT]
+> **TPM & Measured Boot Masking**
+> The masking of `systemd-pcr*` and `systemd-tpm2*` services is intended for systems **not using LUKS encryption** or TPM-based disk unlocking. On this specific build, these are disabled to eliminate the 5+ second software delay caused by the system waiting for the TPM chip to initialize and measure the boot stages. 
+> 
+> *If you plan to use TPM-based full disk encryption in the future, these services must remain unmasked.*
+
+**Disable delays caused by Network waiting**
+  
+By default, some systems wait for a confirmed internet connection before reaching the login manager. Disabling this service allows the desktop to load while Wi-Fi connects in the background.
+  
+```
+sudo systemctl mask NetworkManager-wait-online.service
+```
+
+**Disable accessibility bus services (User level)**
+
+To reduce memory overhead and slight app-launch latency, accessibility bus services can be disabled.
+  
+```
+systemctl --user mask at-spi-dbus-bus.service
+systemctl --user mask org.a11y.atspi.Registry.service
+systemctl --user stop at-spi-dbus-bus.service
+systemctl --user stop org.a11y.atspi.Registry.service
+```
+
+**Bluetooth "Auto-On" Disable**
+
+To prevent Bluetooth from wasting battery by turning on at every boot, edit `/etc/bluetooth/main.conf` and set: 
+
+```
+AutoEnable=false
+```
+> [!IMPORTANT]
+> If it has a # at the beginning of the line, just delete the # to "uncomment" it.
+
+---
+## 🧠 Memory Management
+
+
 
   ### 2. Kernel: Early Modesetting (KMS)
   To prevent screen flickering and ensure the Intel UHD 620 graphics are initialized as early as possible, the `i915` module is loaded during the initramfs stage.
@@ -260,51 +341,9 @@ iwctl --passphrase "YOUR_PASSWORD" station wlan0 connect "YOUR_SSID"
   sudo mkinitcpio -P
   ```
   
-  ### 3. Systemd: TPM & Security Masking
   
-If you use a standard Btfrs partition without LUKS encryption, the 5+ second delay caused by the system polling the TPM 2.0 can be eliminated by masking the relevant services.
-This way, we are avoiding a Software Delay, by preventing systemd from waiting for the chip to initialize
-  
-  ```
-  sudo systemctl mask \
-    systemd-tpm2-setup-early.service \
-    systemd-tpm2-setup.service \
-    systemd-pcrproduct.service \
-    systemd-pcrphase.service \
-    systemd-pcrphase-sysinit.service \
-    systemd-pcrmachine.service
-  ```
-  
-  ### 4. Network: Non-Blocking Startup
-  
-  By default, some systems wait for a confirmed internet connection before reaching the login manager. Disabling this service allows the desktop to load while Wi-Fi connects in the background.
-  
-  ```
-  sudo systemctl mask NetworkManager-wait-online.service
-  ```
-  
-  ### 5. User Interface: Accessibility (AT-SPI) Cleanup
-  
-  To reduce memory overhead and slight app-launch latency, accessibility bus services can be disabled.
-  
-  ```
-  systemctl --user mask at-spi-dbus-bus.service
-  systemctl --user mask org.a11y.atspi.Registry.service
-  systemctl --user stop at-spi-dbus-bus.service
-  systemctl --user stop org.a11y.atspi.Registry.service
-  ```
 
-  ### 6. Bluetooth "Auto-On" Disable
-
-  By default, Bluetooth often powers on at every boot, wasting battery if you don't use it.
-
-  Edit /etc/bluetooth/main.conf and set: 
-
-  ```
-  AutoEnable=false
-  ```
-  > [!IMPORTANT]
-  > If it has a # at the beginning of the line, delete the # to "uncomment" it.
+  
   
   ### 7. Cleaning Up Packages
   
