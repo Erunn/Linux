@@ -130,7 +130,7 @@ yay -S inter-font ttf-nerd-fonts-symbols
 
 Since this setup utilizes Btrfs on an NVMe SSD, ZRAM is used instead of a traditional swap partition/file. This creates a compressed swap device in RAM, which is significantly faster than swapping to disk and extends the lifespan of the SSD.
 
-### 1. Disable ZSwap
+**Disable ZSwap**
 
 ZSwap is a kernel feature that acts as a cache for a disk-based swap. Since we are using ZRAM, ZSwap is redundant and can be disabled via the kernel parameter included in your cmdline (check `/etc/kernel/cmdline`):
 
@@ -138,7 +138,7 @@ ZSwap is a kernel feature that acts as a cache for a disk-based swap. Since we a
 zswap.enabled=0
 ```
 
-## 2. Install and Configure zram-generator
+**Install and Configure zram-generator**
 
 `zram-generator` is written in Rust, extremely lightweight, and integrates directly with systemd to manage ZRAM devices.
 
@@ -159,7 +159,7 @@ fs-type = swap
 > [!IMPORTANT]
 > For systems with 8 GB RAM, consider ram / 3 instead of ram / 2.
 
-### 3. Tuning Swappiness & VM Parameters
+**Tuning Swappiness & VM Parameters**
 
 To ensure the system uses the compressed ZRAM effectively before touching the disk, create or edit `/etc/sysctl.d/99-vm-zram-parameters.conf`,  and add the following:
 
@@ -170,7 +170,7 @@ vm.watermark_scale_factor = 125
 vm.page-cluster = 0
 ```
 
-### 4. Verification
+**Verification**
 
 After a reboot, verify that your ZRAM is active and using the `zstd` algorithm:
 
