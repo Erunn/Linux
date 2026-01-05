@@ -395,22 +395,24 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. By
 | `nvme_core.default_ps_max_latency_us=5500` | NVMe PS4/PS5 Sleep | Enables deepest SSD sleep states with a "sweet spot" latency for stability. |
 
 > [!IMPORTANT]
-> a) Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
+> **a)** Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
 > 
-> b) On some T480s panels (depending on whether you have the LG or Innolux display), **PSR** can occasionally cause a tiny "stutter" or flicker when moving the mouse after a pause.
+> **b)** On some T480s panels (depending on whether you have the LG or Innolux display), **PSR** can occasionally cause a tiny "stutter" or flicker when moving the mouse after a pause.
 If you experience flickering, change the parameter to `i915.enable_psr=0`. It costs about **0.5W** of power but fixes the flicker instantly.
 > 
-> c) Since you are enabling **GuC/HuC** (`i915.enable_guc=3`), the `linux-firmware` package is required, to allow the GPU to handle its own power management and video decoding more efficiently.
+> **c)** Since you are enabling **GuC/HuC** (`i915.enable_guc=3`), the `linux-firmware` package is required, to allow the GPU to handle its own power management and video decoding more efficiently.
+
+&nbsp;
 
 To apply these changes, ensure your kernel command line is updated and you regenerate your initramfs:
 
-Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
+**a)** Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
   
 ```
 quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm_tis.interrupts=0 tpm_tis.force=0 modprobe.blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.enable_guc=3 pcie_aspm=force nvme_core.default_ps_max_latency_us=5500
 ```
   
-Run the following command to rebuild the image and apply these new flags into the UKI.
+**b)** Run the following command to rebuild the image and apply these new flags into the UKI.
   
 ```
 sudo mkinitcpio -P
