@@ -3,10 +3,20 @@
 This repository serves as a comprehensive guide and reference for configuring a high-performance, power-efficient, and lightweight Arch Linux environment. While designed specifically for the **ThinkPad T480s**, the optimizations here are applicable to many Intel-based laptops.
 
 ### 🎯 Project Goals
-* **Sub-4W Idle Draw:** Leveraging advanced kernel parameters (ASPM, PSR, GuC) and hardware-level hardening to maximize battery endurance.
+
+* **Maximizing Battery:** Leveraging advanced kernel parameters (ASPM, PSR, GuC) and hardware-level hardening to maximize battery endurance.
 * **Modern Wayland Stack:** Using **LabWC** (Openbox-inspired Wayland compositor) and **LXQt** for a footprint that is significantly lighter than GNOME or KDE.
 * **Instant Responsiveness:** Optimized memory management via **ZRAM** and a streamlined **initramfs** for near-instant boot times and smooth multitasking.
 * **Minimalist Maintenance:** A "zero-bloat" approach to system updates and package management.
+
+### 💰 Build Value & Cost Breakdown
+
+| Item | Description | Cost |
+| :--- | :--- | :--- |
+| **ThinkPad T480s** | i5-8250U 16GB RAM 256GB SSD | 229,80€ |
+| **Panel Upgrade** | AUO B140HAN06.B (400 nits, 100% sRGB) | 83,48€ |
+| **Glass Trackpad** | X1 Extreme / P1 Glass Trackpad | 21,17€ |
+| **Wi-Fi 6E Mod** | Intel AX210 Gig+ Module | 15,79€ |
 
 ---
 
