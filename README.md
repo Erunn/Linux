@@ -345,7 +345,7 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`rd.systemd.show_status=auto`** | Smart Service Status | Only shows systemd service logs if a service fails to start. |
 | **`rd.udev.log_priority=3`** | Udev Verbosity Control | Hides hardware initialization logs for a seamless transition to the desktop. |
 | **`tpm_tis.interrupts=0`** | TPM Polling Fix | Prevents the system from hanging while waiting for TPM interrupts. |
-| **`modprobe.blacklist=tpm_tis,tpm_tis_core`** | TPM Hard-Block | Speeds up boot by preventing the TPM driver from loading. |
+| **`module_blacklist=tpm_tis,tpm_tis_core`** | TPM Hard-Block | Speeds up boot by preventing the TPM driver from loading. |
 | **`8250.nr_uarts=0`** | Skip Serial Scan | Disables searching for non-existent legacy RS-232 COM ports. |
 | **`i915.modeset=1`** | Early KMS | Prevents screen "flashing" by initializing the GPU before the desktop loads. |
 | **`i915.enable_fbc=1`** | Framebuffer Compression | Saves power by compressing the image stored in video memory. |
@@ -367,7 +367,7 @@ To apply these changes, ensure your kernel command line is updated and you regen
 **a)** Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
   
 ```
-quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm_tis.interrupts=0 tpm_tis.force=0 modprobe.blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.enable_guc=3 pcie_aspm=force nvme_core.default_ps_max_latency_us=5500
+quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm_tis.interrupts=0 tpm_tis.force=0 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.enable_guc=3 pcie_aspm=force nvme_core.default_ps_max_latency_us=5500
 ```
   
 **b)** Run the following command to rebuild the image and apply these new flags into the UKI.
