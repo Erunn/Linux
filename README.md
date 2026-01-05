@@ -27,7 +27,6 @@ This repository serves as a comprehensive guide for configuring a high-performan
 5. [🖥️ User Experience & Boot](#️-user-experience--boot)
 6. [🛠️ System Maintenance](#️-system-maintenance)
 7. [🔍 Analysis & Debugging](#-system-analysis--debugging)
-8. [🎨 Theming](#-theming)
 
 ---
   
@@ -360,8 +359,6 @@ If you experience flickering, change the parameter to `i915.enable_psr=0`.
 > 
 > **c)** To enable **GuC/HuC** (`i915.enable_guc=3`), the `linux-firmware` package is required, to allow the GPU to handle its own power management and video decoding more efficiently.
 
-&nbsp;
-
 To apply these changes, ensure your kernel command line is updated and you regenerate your initramfs:
 
 **a)** Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
@@ -394,8 +391,6 @@ The initramfs is the environment that loads hardware drivers. Using the systemd 
 > [!IMPORTANT]
 > The fsck hook has been removed. Since this setup uses Btrfs, the standard fsck is unnecessary; removing it prevents cosmetic "exit status 8" errors in the boot logs.
 
-&nbsp;
-
 Edit `/etc/mkinitcpio.conf` and edit the modules and hooks lines, to look like this:
 
 ```
@@ -419,144 +414,96 @@ This command provides detailed battery statistics (percentage, remaining time, a
 ```
 sh -c 'BAT_SYS_PATH="/sys/class/power_supply/BAT0"; BAT_UPOWER_PATH="/org/freedesktop/UPower/devices/battery_BAT0"; watt=$(awk "{printf \" %.2f W\", \$1 / 1000000}" "$BAT_SYS_PATH/power_now"); perc=$(cat "$BAT_SYS_PATH/capacity")%; time=$(upower -i "$BAT_UPOWER_PATH" | awk "/time/ {print \" \"\$4, \$5}"); echo "|  $perc | $time | $watt |"'
 ```
-  
-  
-  ### 7. Cleaning Up Packages
-  
-  Uninstall redundant or less efficient packages:
-  ```
-  sudo pacman -Rns network-manager-applet l3afpad vim
-  ```
-  
-  ---
-  
-  ## 💻 System Maintenance
-  
-  ### 1. Full System Update & Cleanup
-  
-  This comprehensive command updates the system, removes orphaned packages and their unused dependencies, and cleans the package cache, keeping only installed packages.
-  
-  ```
-  sudo pacman -Sc --noconfirm && yay -Syu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
-  ```
-  
-  ### 2. Enable SSD TRIM
-  
-  For optimal SSD longevity and performance, enable the weekly TRIM service:
-  
-  ```
-  sudo systemctl enable --now fstrim.timer
-  ```
-  
-  Check status:
-  
-  ```
-  sudo systemctl status fstrim.timer
-  ```
-  
-  ### 3. Taming the Journal Size
-  
-  Limit the size and age of the systemd journal logs to prevent disk space consumption:
 
-  Execute the command:
+---
 
-  ```
-  sudo nano /etc/systemd/journald.conf
-  ```
+## 💻 System Maintenance
 
-  Find and change these lines (remove the # at the start):
+To maintain the "Minimalist" nature of this build, these maintenance tasks ensure that the SSD remains fast, logs don't bloat the system, and the package cache stays clean.
 
-  ```
-  SystemMaxUse=100M
-  MaxRetentionSec=2week
-  ```
+### 1. Full System Update & Cleanup
+This comprehensive one-liner handles the entire maintenance cycle: it updates the system, removes "orphaned" packages (dependencies no longer needed), and clears the package cache.
 
-  ---
-  
-  ## 🔍 System Analysis & Debugging
-  
-  ### 1. Analyzing the Boot Process
-  
-  Check and debug slow boot times:
-  
-  ```
-  sudo systemd-analyze
-  sudo systemd-analyze blame
-  sudo systemd-analyze critical-chain
-  ```
-  
-  ### 2. Check for System Errors
-  
-  Identify any failed services and check the journal for critical errors:
-  
-  ```
-  echo "--- KERNEL ERRORS ---"; sudo journalctl -p 3 -xb --no-hostname --no-pager; echo "--- POWER & VOLTAGE ---"; sudo journalctl -u tlp -u intel-undervolt -b; echo "--- BTRFS HEALTH ---"; sudo journalctl -t btrfs -b; echo "--- ZRAM STATUS ---"; zramctl
-  ```
-  
-  ### 3. Running Services and Timers
-  
-  List active services and timers for debugging or optimization purposes:
-  
-  ```
+ ```
+ sudo pacman -Sc --noconfirm && yay -Syu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
+ ```
 
-  systemctl list-units --type=service --state=active
-  systemctl --failed
-  systemctl --user list-units --type=service --state=active
-  systemctl list-timers 
-  ```
+### 2. Enable SSD TRIM
   
-  ---
-  
-## 🖥️ User Experience & Boot
-  
-### 1. Optimized Kernel Boot Parameters
-  
+Since this build uses an NVMe SSD with Btrfs, regular TRIM operations are essential to maintain write speeds and drive longevity. We use the systemd timer to handle this weekly.
 
-  
+**Enable the weekly TRIM service:** 
 
+```
+sudo systemctl enable --now fstrim.timer
+```
+**Check status to ensure it is scheduled:**
   
+```
+sudo systemctl status fstrim.timer
+```
+
+### 3. Taming the Journal Size
   
+By default, systemd logs can grow to several gigabytes. For a minimal setup, we limit the journal to a small footprint and a 2-week history.
+
+Execute the command:
+
+```
+sudo nano /etc/systemd/journald.conf
+```
+
+Update (or uncomment) the following lines:
+
+```
+SystemMaxUse=100M
+MaxRetentionSec=2week
+```
   
-  ## 🎨 Theming
+### 4. Cleaning Up Redundant Packages
   
-  ### 1. Catppuccin Frappé
+Uninstall legacy or heavyweight utilities to keep the system optimized for the Wayland/LXQt stack:
+
+```
+sudo pacman -Rns network-manager-applet l3afpad vim
+```
+
+---
   
-  This table provides the specific hex codes to achieve a Frappé look within the LXQt Appearance settings.
+## 🔍 Analysis & Debugging
+
+Use these commands to verify that your optimizations (ZRAM, Boot speed, etc.) are working as intended.
+
+### 1. Analyzing the Boot Process
   
-  | UI Element | Catppuccin Role | Hex Code | Swatch |
-  | :--- | :--- | :--- | :--- |
-  | **Window** | Base | `#303446` | ![#303446](https://via.placeholder.com/15/303446/000000?text=+) |
-  | **Window Text** | Text | `#c6d0f5` | ![#c6d0f5](https://via.placeholder.com/15/c6d0f5/000000?text=+) |
-  | **View (List/Input)** | Mantle | `#292c3c` | ![#292c3c](https://via.placeholder.com/15/292c3c/000000?text=+) |
-  | **View Text** | Text | `#c6d0f5` | ![#c6d0f5](https://via.placeholder.com/15/c6d0f5/000000?text=+) |
-  | **Selection** | Lavender | `#babbf1` | ![#babbf1](https://via.placeholder.com/15/babbf1/000000?text=+) |
-  | **Selected Text** | Base | `#303446` | ![#303446](https://via.placeholder.com/15/303446/000000?text=+) |
-  | **Tooltip** | Mantle | `#292c3c` | ![#292c3c](https://via.placeholder.com/15/292c3c/000000?text=+) |
-  | **Tooltip Text** | Text | `#c6d0f5` | ![#c6d0f5](https://via.placeholder.com/15/c6d0f5/000000?text=+) |
-  | **Link** | Blue | `#8caaee` | ![#8caaee](https://via.placeholder.com/15/8caaee/000000?text=+) |
-  | **Visited Link** | Mauve | `#ca9ee6` | ![#ca9ee6](https://via.placeholder.com/15/ca9ee6/000000?text=+) |
-  | **Taskbar BG** | Crust | `#232634` | ![#232634](https://via.placeholder.com/15/232634/000000?text=+) |
+Check and debug slow boot times:
   
-  ### 2. Catppuccin Latte
+```
+sudo systemd-analyze
+sudo systemd-analyze blame
+sudo systemd-analyze critical-chain
+```
   
-  This table provides the specific hex codes for the Latte (Light) flavor, mapped to the LXQt Appearance elements.
+### 2. Check for System Errors
   
-  | UI Element | Catppuccin Role | Hex Code | Swatch |
-  | :--- | :--- | :--- | :--- |
-  | **Window** | Base | `#eff1f5` | ![#eff1f5](https://via.placeholder.com/15/eff1f5/000000?text=+) |
-  | **Window Text** | Text | `#4c4f69` | ![#4c4f69](https://via.placeholder.com/15/4c4f69/000000?text=+) |
-  | **View (List/Input)** | Mantle | `#e6e9ef` | ![#e6e9ef](https://via.placeholder.com/15/e6e9ef/000000?text=+) |
-  | **View Text** | Text | `#4c4f69` | ![#4c4f69](https://via.placeholder.com/15/4c4f69/000000?text=+) |
-  | **Selection** | Lavender | `#7287fd` | ![#7287fd](https://via.placeholder.com/15/7287fd/000000?text=+) |
-  | **Selected Text** | Base | `#eff1f5` | ![#eff1f5](https://via.placeholder.com/15/eff1f5/000000?text=+) |
-  | **Tooltip** | Mantle | `#e6e9ef` | ![#e6e9ef](https://via.placeholder.com/15/e6e9ef/000000?text=+) |
-  | **Tooltip Text** | Text | `#4c4f69` | ![#4c4f69](https://via.placeholder.com/15/4c4f69/000000?text=+) |
-  | **Link** | Blue | `#1e66f5` | ![#1e66f5](https://via.placeholder.com/15/1e66f5/000000?text=+) |
-  | **Visited Link** | Mauve | `#8839ef` | ![#8839ef](https://via.placeholder.com/15/8839ef/000000?text=+) |
-  | **Taskbar BG** | Crust | `#dce0e8` | ![#dce0e8](https://via.placeholder.com/15/dce0e8/000000?text=+) |
+A quick way to check kernel health, power management status, and ZRAM compression in one go:
   
-  ### 3. LXQT themes command
+```
+echo "--- KERNEL ERRORS ---"; sudo journalctl -p 3 -xb --no-hostname --no-pager
+echo "--- POWER & VOLTAGE ---"; sudo journalctl -u tlp -u intel-undervolt -b
+echo "--- BTRFS HEALTH ---"; sudo journalctl -t btrfs -b
+echo "--- ZRAM STATUS ---"; zramctl
+```
   
-  ```
-  sudo cp -r /home/rui/Downloads/catppuccin-frappe /usr/share/lxqt/themes/
-  ```
+### 3. Running Services and Timers
+  
+Monitor what is currently running to ensure no unnecessary background bloat has crept in:
+  
+```
+systemctl list-units --type=service --state=active
+systemctl --user list-units --type=service --state=active
+systemctl list-timers
+systemctl --failed
+```
+
+---
