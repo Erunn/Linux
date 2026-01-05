@@ -15,18 +15,18 @@ This repository serves as a comprehensive guide for configuring a high-performan
 | **Panel Upgrade** | AUO B140HAN06.B (400 nits, 100% sRGB) | 83,48€ |
 | **Glass Trackpad** | X1 Extreme / P1 Glass Trackpad | 21,17€ |
 | **Wi-Fi 6E Mod** | Intel AX210 Gig+ Module | 15,79€ |
-| **Total Build** |  | **350,24€** |
+| **Total Build** | --- | **350,24€** |
 
 ---
 
 ## 📖 Table of Contents
-1. [🔒 BIOS / Firmware Configuration](#-bios--firmware-configuration-hardening--power)
+1. [🔒 BIOS / Firmware Configuration](#-bios--firmware-configuration)
 2. [🛠️ Installation & Setup](#️-installation--setup)
-3. [🧠 Memory Management](#-memory-management-zram-optimization)
-4. [⚡ System & Power Optimization](#-system-optimization--power-efficiency)
+3. [🧠 Memory Management](#-memory-management)
+4. [⚡ System & Power Optimization](#-system--power-optimization)
 5. [🖥️ User Experience & Boot](#️-user-experience--boot)
 6. [🛠️ System Maintenance](#️-system-maintenance)
-7. [🔍 Analysis & Debugging](#-system-analysis--debugging)
+7. [🔍 Analysis & Debugging](#-analysis--debugging)
 
 ---
   
@@ -155,6 +155,7 @@ compression-algorithm = zstd
 swap-priority = 100
 fs-type = swap
 ```
+
 > [!IMPORTANT]
 > For systems with 8 GB RAM, consider ram / 3 instead of ram / 2.
 
