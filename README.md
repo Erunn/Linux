@@ -358,6 +358,7 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`nvme_core.default_ps_max_latency_us=5500`** | NVMe Deep Sleep | Sets the latency "sweet spot" (5.5ms) for stable SSD power management. |
 | **`intel_idle.max_cstate=9`** | Force Deep C-States | Allows the CPU package to reach C9/C10 sleep states. |
 | **`processor.max_cstate=9`** | Processor Sleep Limit | Redundant guard to ensure the ACPI driver respects deep sleep limits. |
+| **`mei.enable=0`** | Intel ME Interface Disable | Hard-disables the Management Engine interface, preventing it from "vetoing" deep Pkg C-states (C8-C10). |
 
 > [!IMPORTANT]
 > **a)** Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
@@ -372,7 +373,7 @@ To apply these changes, ensure your kernel command line is updated and you regen
 **a)** Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
   
 ```
-quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm.policy=powersupersave transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 processor.max_cstate=9
+quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm.policy=powersupersave transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 processor.max_cstate=9 mei.enable=0
 ```
   
 **b)** Run the following command to rebuild the image and apply these new flags into the UKI.
