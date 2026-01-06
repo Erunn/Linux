@@ -192,16 +192,16 @@ Set these environment variables in your LXQt Session Settings for maximum perfor
   
 | Variable | Value | Purpose |
 | :--- | :--- | :--- |
-| `MOZ_ENABLE_WAYLAND` | `1` | Forces Firefox to use native Wayland for better power efficiency. |
-| `MOZ_VA_API_ALL_DRIVERS` | `1` | Enables hardware video decoding in Firefox, drastically reducing CPU load. |
-| `MOZ_ENABLE_DMABUF` | `1` | Improves rendering efficiency for media content. |
-| `MOZ_ACCELERATE_VSYNC` | `1` | Syncs Firefox rendering with Wayland VSync to eliminate tearing/jitter. |
-| `QT_QPA_PLATFORM` | `wayland` | Forces Qt applications (LXQt) to use native Wayland protocols. |
-| `GDK_BACKEND` | `wayland` | Tells GTK applications to prefer the native Wayland backend. |
-| `GTK_MODULES` | `""` | Prevents GTK from searching for legacy/accessibility modules. |
-| `NO_AT_BRIDGE` | `1` | Disables the AT-SPI accessibility bus to reduce launch lag and overhead. |
-| `LIBVA_DRIVER_NAME` | `iHD` | Offloads video decoding (VP9/HEVC) to the dedicated GPU hardware, allowing the CPU to remain idle. |
-
+| **`MOZ_ENABLE_WAYLAND`** | `1` | Forces Firefox to use native Wayland protocols, enabling zero-copy screen updates. |
+| **`MOZ_WEBRENDER`** | `1` | Offloads page "painting" to the GPU; keeps CPU in deep C-states during web interaction. |
+| **`MOZ_VA_API_ALL_DRIVERS`** | `1` | Ensures hardware video decoding is prioritized regardless of driver versioning. |
+| **`MOZ_ENABLE_DMABUF`** | `1` | Allows video textures to stay in GPU memory, avoiding expensive CPU/RAM copies. |
+| **`MOZ_ACCELERATE_VSYNC`** | `1` | Prevents "over-rendering" by syncing frames perfectly with the 60Hz display. |
+| **`LIBVA_DRIVER_NAME`** | `iHD` | Explicitly targets the modern Intel Media Driver for the 8th Gen UHD 620 graphics. |
+| **`QT_QPA_PLATFORM`** | `wayland` | Forces Qt apps to use Wayland, avoiding the power overhead of XWayland translation. |
+| **`GDK_BACKEND`** | `wayland` | Ensures GTK apps bypass legacy X11 protocols for lower input latency and power. |
+| **`GTK_MODULES`** | `""` | Stops GTK from loading unused legacy modules that cause unnecessary background wakeups. |
+| **`NO_AT_BRIDGE`** | `1` | Hard-disables the accessibility bus, saving CPU cycles spent on background IPC polling. |
 
 ### 2. Wireless Networking with iwd (iNet Wireless Daemon)
 
