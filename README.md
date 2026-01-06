@@ -351,8 +351,8 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`i915.modeset=1`** | Early KMS | Prevents screen "flashing" by initializing the GPU before the desktop loads. |
 | **`i915.enable_fbc=1`** | Framebuffer Compression | Saves power by compressing the image stored in video memory. |
 | **`i915.enable_psr=1`** | Panel Self Refresh | Allows the GPU to enter a low-power "nap" when the screen is static. |
-| **`i915.enable_guc=3`** | GuC/HuC Firmware | Offloads video decoding and power management to dedicated GPU microcontrollers. |
-| **`pcie_aspm=force`** | Aggressive PCIe Power | Forces NVMe and Wi-Fi into low-power states. |
+| **`i915.enable_guc=2`** | GuC/HuC Firmware | Offloads video decoding and power management to dedicated GPU microcontrollers. |
+| **`pcie_aspm.policy=powersupersave`** | Aggressive PCIe Power | Forces NVMe and Wi-Fi into low-power states. |
 | **`transparent_hugepage=never`** | Prevents `khugepaged` background CPU wakeups and reduces memory "bloat." Standard 4KB pages provide better granularity for ZRAM compression and lower latency in a desktop (Wayland) environment. |
 | **`nvme_core.default_ps_max_latency_us=5500`** | NVMe PS4/PS5 Sleep | Enables deepest SSD sleep states with a "sweet spot" latency for stability. |
 
@@ -369,7 +369,7 @@ To apply these changes, ensure your kernel command line is updated and you regen
 **a)** Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
   
 ```
-quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.enable_guc=3 pcie_aspm=force transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500
+quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm.policy=powersupersave transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 processor.max_cstate=9
 ```
   
 **b)** Run the following command to rebuild the image and apply these new flags into the UKI.
