@@ -342,19 +342,22 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | Parameter | Function | Benefit |
 | :--- | :--- | :--- |
 | **`quiet`** | Minimal Boot Verbosity | Removes the "wall of text" during startup for a cleaner look. |
-| **`splash`** | Boot Splash Support | Allows the use of a graphical boot logo (like Plymouth/BGRT). |
+| **`splash`** | Boot Splash Support | Allows the use of a graphical boot logo (BGRT). |
 | **`loglevel=3`** | Error Suppression | Filters out non-critical kernel "noise" while keeping errors visible. |
 | **`rd.systemd.show_status=auto`** | Smart Service Status | Only shows systemd service logs if a service fails to start. |
-| **`rd.udev.log_priority=3`** | Udev Verbosity Control | Hides hardware initialization logs for a seamless transition to the desktop. |
-| **`module_blacklist=tpm_tis,tpm_tis_core`** | TPM Hard-Block | Speeds up boot by preventing the TPM driver from loading. |
-| **`8250.nr_uarts=0`** | Skip Serial Scan | Disables searching for non-existent legacy RS-232 COM ports. |
-| **`i915.modeset=1`** | Early KMS | Prevents screen "flashing" by initializing the GPU before the desktop loads. |
-| **`i915.enable_fbc=1`** | Framebuffer Compression | Saves power by compressing the image stored in video memory. |
-| **`i915.enable_psr=1`** | Panel Self Refresh | Allows the GPU to enter a low-power "nap" when the screen is static. |
-| **`i915.enable_guc=2`** | GuC/HuC Firmware | Offloads video decoding and power management to dedicated GPU microcontrollers. |
-| **`pcie_aspm.policy=powersupersave`** | Aggressive PCIe Power | Forces NVMe and Wi-Fi into low-power states. |
-| **`transparent_hugepage=never`** | Prevents `khugepaged` background CPU wakeups and reduces memory "bloat." Standard 4KB pages provide better granularity for ZRAM compression and lower latency in a desktop (Wayland) environment. |
-| **`nvme_core.default_ps_max_latency_us=5500`** | NVMe PS4/PS5 Sleep | Enables deepest SSD sleep states with a "sweet spot" latency for stability. |
+| **`rd.udev.log_priority=3`** | Udev Verbosity Control | Hides hardware initialization logs for a seamless boot transition. |
+| **`module_blacklist=tpm_tis,tpm_tis_core`** | TPM Hard-Block | Reclaims ~2s of boot time by preventing faulty TPM polling. |
+| **`8250.nr_uarts=0`** | Skip Serial Scan | Disables searching for non-existent legacy RS-232 serial ports. |
+| **`i915.modeset=1`** | Early KMS | Prevents screen "flashing" by initializing GPU before the login manager. |
+| **`i915.enable_fbc=1`** | Framebuffer Compression | Reduces memory bandwidth/power use by compressing video memory. |
+| **`i915.enable_psr=1`** | Panel Self Refresh | Stops GPU refresh cycles when the image is static (crucial for idle power). |
+| **`i915.psr_safest_params=1`** | PSR Stability Guard | Uses conservative timing to prevent flickering/freezing on 8th Gen panels. |
+| **`i915.enable_guc=2`** | HuC Firmware Auth | Enables hardware HEVC/VP9 decoding for cooler, longer video playback. |
+| **`pcie_aspm.policy=powersupersave`** | Aggressive PCIe Power | Forces NVMe, Wi-Fi, and LAN into deepest L1.2 sub-power states. |
+| **`transparent_hugepage=never`** | Disable Huge Pages | Optimizes RAM for ZRAM compression and stops `khugepaged` wakeups. |
+| **`nvme_core.default_ps_max_latency_us=5500`** | NVMe Deep Sleep | Sets the latency "sweet spot" (5.5ms) for stable SSD power management. |
+| **`intel_idle.max_cstate=9`** | Force Deep C-States | Allows the CPU package to reach C9/C10 sleep states. |
+| **`processor.max_cstate=9`** | Processor Sleep Limit | Redundant guard to ensure the ACPI driver respects deep sleep limits. |
 
 > [!IMPORTANT]
 > **a)** Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
