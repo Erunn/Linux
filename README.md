@@ -407,8 +407,6 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`loglevel=3`** | Error Suppression | Filters out non-critical kernel "noise" while keeping errors visible. |
 | **`rd.systemd.show_status=auto`** | Smart Service Status | Only shows systemd service logs if a service fails to start. |
 | **`rd.udev.log_priority=3`** | Udev Verbosity Control | Hides hardware initialization logs for a seamless boot transition. |
-| **`libahci.ignore_sss=1`** | Skip Staggered Spin-up | Bypasses legacy SATA power-up delays; optimized for instant NVMe readiness. |
-| **`module_blacklist=tpm_tis,tpm_tis_core,tpm_crb`** | TPM Hard-Block | Completely bypasses TPM initialization, reclaiming ~2s of boot time. |
 | **`tpm.disable=1`** | TPM Kernel Killswitch | Disables the TPM subsystem at the core level to prevent hardware polling. |
 | **`8250.nr_uarts=0`** | Skip Serial Scan | Disables searching for non-existent legacy RS-232 serial ports. |
 | **`i915.modeset=1`** | Early KMS | Prevents screen "flashing" by initializing GPU before the login manager. |
@@ -416,14 +414,13 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`i915.enable_psr=1`** | Panel Self Refresh | Stops GPU refresh cycles when the image is static (saves significant idle power). |
 | **`i915.psr_safest_params=1`** | PSR Stability Guard | Uses conservative timing to prevent flickering on 8th Gen laptop panels. |
 | **`i915.enable_guc=2`** | GuC/HuC Firmware | Enables hardware-level scheduling and HEVC/VP9 decoding for cooler video. |
-| **`pcie_aspm.policy=force`** | Aggressive PCIe Power | Forces NVMe, Wi-Fi, and LAN into deepest L1.2 low-power states. |
+| **`pcie_aspm=force`** | Aggressive PCIe Power | Forces NVMe, Wi-Fi, and LAN into deepest L1.2 low-power states. |
 | **`transparent_hugepage=never`** | Disable Huge Pages | Optimizes RAM for ZRAM compression and stops background memory wakeups. |
 | **`nvme_core.default_ps_max_latency_us=5500`** | NVMe Deep Sleep | Sets the latency "sweet spot" (5.5ms) for stable SSD power management. |
 | **`intel_idle.max_cstate=9`** | Force Deep C-States | Allows the CPU package to reach the ultra-deep C9/C10 sleep states. |
 | **`mei.enable=0`** | Intel ME Interface Disable | Prevents the Management Engine from "vetoing" deep Package C-states. |
 | **`nmi_watchdog=0`** | Disable NMI Watchdog | Disables the periodic "heartbeat" interrupt, reducing CPU wakeups. |
 | **`mem_sleep_default=deep`** | S3 Deep Sleep | Ensures the laptop uses 'Deep' sleep instead of 'S2idle' (better battery). |
-| **`rootflags=subvol=@`** | Btrfs Root Subvolume | Mounts the OS subvolume directly; essential for reliable snapshot rollbacks. |
 
 > [!IMPORTANT]
 > **a)** Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
@@ -438,7 +435,7 @@ To apply these changes, ensure your kernel command line is updated and you regen
 **a)** Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
   
 ```
-quiet splash loglevel=3 libahci.ignore_sss=1 rd.systemd.show_status=auto rd.udev.log_priority=3 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm.policy=force transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 mei.enable=0 rootflags=subvol=@
+quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm.disable=1 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm=force transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 mei.enable=0 nmi_watchdog=0 mem_sleep_default=deep
 ```
   
 **b)** Run the following command to rebuild the image and apply these new flags into the UKI.
