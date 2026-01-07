@@ -345,6 +345,8 @@ systemd-pcrphase.service \
 systemd-pcrphase-sysinit.service \
 systemd-pcrmachine.service \
 systemd-pcrnvdone.service \
+dev-tpm0.device \
+dev-tpmrm0.device \
 tpm2.target
 ```
 
