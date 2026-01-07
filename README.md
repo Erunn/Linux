@@ -407,20 +407,23 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`loglevel=3`** | Error Suppression | Filters out non-critical kernel "noise" while keeping errors visible. |
 | **`rd.systemd.show_status=auto`** | Smart Service Status | Only shows systemd service logs if a service fails to start. |
 | **`rd.udev.log_priority=3`** | Udev Verbosity Control | Hides hardware initialization logs for a seamless boot transition. |
-| **`tpm.disable=1`** | TPM Kernel Killswitch | Disables the TPM subsystem at the core level to prevent hardware polling. |
+| **`zswap.enabled=0`** | Disable Zswap | Prevents kernel-level swap compression (Optimized for ZRAM setups). |
+| **`tpm.disable=1`** | TPM Kernel Killswitch | Disables the TPM subsystem to prevent background hardware polling. |
 | **`8250.nr_uarts=0`** | Skip Serial Scan | Disables searching for non-existent legacy RS-232 serial ports. |
 | **`i915.modeset=1`** | Early KMS | Prevents screen "flashing" by initializing GPU before the login manager. |
-| **`i915.enable_fbc=1`** | Framebuffer Compression | Reduces memory bandwidth and power use by compressing video memory. |
-| **`i915.enable_psr=1`** | Panel Self Refresh | Stops GPU refresh cycles when the image is static (saves significant idle power). |
-| **`i915.psr_safest_params=1`** | PSR Stability Guard | Uses conservative timing to prevent flickering on 8th Gen laptop panels. |
-| **`i915.enable_guc=2`** | GuC/HuC Firmware | Enables hardware-level scheduling and HEVC/VP9 decoding for cooler video. |
+| **`i915.enable_fbc=1`** | Framebuffer Compression | Reduces memory bandwidth and power by compressing video memory. |
+| **`i915.enable_psr=1`** | Panel Self Refresh | Stops GPU refresh cycles when the image is static (Huge idle savings). |
+| **`i915.psr_safest_params=1`** | PSR Stability Guard | Uses conservative timing to prevent flickering on 8th Gen panels. |
+| **`i915.enable_guc=2`** | HuC Authentication | Offloads HEVC/VP9 video decoding to the GPU micro-engine. |
 | **`pcie_aspm=force`** | Aggressive PCIe Power | Forces NVMe, Wi-Fi, and LAN into deepest L1.2 low-power states. |
-| **`transparent_hugepage=never`** | Disable Huge Pages | Optimizes RAM for ZRAM compression and stops background memory wakeups. |
-| **`nvme_core.default_ps_max_latency_us=5500`** | NVMe Deep Sleep | Sets the latency "sweet spot" (5.5ms) for stable SSD power management. |
-| **`intel_idle.max_cstate=9`** | Force Deep C-States | Allows the CPU package to reach the ultra-deep C9/C10 sleep states. |
+| **`transparent_hugepage=never`** | Disable Huge Pages | Stops background memory compaction wakeups; better for ZRAM/Btrfs. |
+| **`nvme_core.default_ps_max_latency_us=5500`** | NVMe Deep Sleep | Sets the latency "sweet spot" (5.5ms) for stable SSD power saving. |
+| **`intel_idle.max_cstate=9`** | Force Deep C-States | Unlocks the CPU's ability to reach ultra-deep C9/C10 sleep levels. |
 | **`mei.enable=0`** | Intel ME Interface Disable | Prevents the Management Engine from "vetoing" deep Package C-states. |
-| **`nmi_watchdog=0`** | Disable NMI Watchdog | Disables the periodic "heartbeat" interrupt, reducing CPU wakeups. |
-| **`mem_sleep_default=deep`** | S3 Deep Sleep | Ensures the laptop uses 'Deep' sleep instead of 'S2idle' (better battery). |
+| **`nmi_watchdog=0`** | Disable NMI Watchdog | Stops the periodic kernel "heartbeat" interrupt, reducing CPU wakeups. |
+| **`mem_sleep_default=deep`** | S3 Deep Sleep | Forces traditional S3 'Deep' sleep instead of Modern Standby (S2idle). |
+| **`rcu_nocbs=0-7`** | RCU Callback Offloading | Offloads kernel "housekeeping" tasks to prevent core interrupts. |
+| **`rcu_nocb_poll`** | Passive RCU Polling | Stops the CPU from waking up just to check for housekeeping tasks. |
 
 > [!IMPORTANT]
 > **a)** Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
@@ -435,7 +438,7 @@ To apply these changes, ensure your kernel command line is updated and you regen
 **a)** Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
   
 ```
-quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm.disable=1 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm=force transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 mei.enable=0 nmi_watchdog=0 mem_sleep_default=deep
+quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm.disable=1 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm=force transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 mei.enable=0 nmi_watchdog=0 mem_sleep_default=deep rcu_nocbs=0-7 rcu_nocb_poll
 ```
   
 **b)** Run the following command to rebuild the image and apply these new flags into the UKI.
