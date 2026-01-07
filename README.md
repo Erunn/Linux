@@ -220,6 +220,7 @@ and add the following lines:
 ```
 [device]
 wifi.backend=iwd
+wifi.iwd.autoconnect=yes
 ```
 
 After saving, and to prevent conflicts, disable the old `wpa_supplicant` service and enable the new `iwd` one:
