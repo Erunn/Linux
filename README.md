@@ -21,12 +21,13 @@ This repository serves as a comprehensive guide for configuring a high-performan
 
 ## 📖 Table of Contents
 1. [🔒 BIOS / Firmware Configuration](#-bios--firmware-configuration)
-2. [🛠️ Installation & Setup](#️-installation--setup)
+2. [🛠️ Installation & Setup](#-installation--setup)
 3. [🧠 Memory Management](#-memory-management)
-4. [⚡ System & Power Optimization](#-system--power-optimization)
-5. [🖥️ User Experience & Boot](#️-user-experience--boot)
-6. [🛠️ System Maintenance](#️-system-maintenance)
-7. [🔍 Analysis & Debugging](#-analysis--debugging)
+4. [🗄️ Btrfs & SSD Optimization](#-btrfs--ssd-optimization)
+5. [⚡ System & Power Optimization](#-system--power-optimization)
+6. [🖥️ User Experience & Boot](#-user-experience--boot)
+7. [💻 System Maintenance](#-system-maintenance)
+8. [🔍 Analysis & Debugging](#-analysis--debugging)
 
 ---
   
@@ -181,7 +182,41 @@ zramctl
 `/dev/zram0` shall be listed with the total swap size and the current compression ratio.
 
 ---
-  
+
+## 🗄️ Btrfs & SSD Optimization
+
+Since this build uses Btrfs on an NVMe SSD, the filesystem is tuned to reduce "write amplification" and allow the CPU to maintain deeper sleep states by grouping disk activity.
+
+### 1. Optimized Mount Options (fstab)
+
+These settings reduce background disk noise and utilize Level 1 compression for the best balance of speed vs. battery life.
+
+| Option | Function | Benefit |
+| :--- | :--- | :--- |
+| **`rw`** | Read-Write Mount | Ensures the filesystem is writable immediately upon mounting. |
+| **`noatime`** | Disable Access Time | Stops the SSD from writing metadata every time a file is read. |
+| **`compress=zstd:1`** | Transparent Compression | Uses Level 1 compression for the lowest CPU overhead during disk IO. |
+| **`ssd`** | Flash Optimization | Ensures Btrfs block allocation is optimized for NVMe storage. |
+| **`commit=120`** | Delayed Write-Buffer | Groups writes every 120s, allowing the CPU to stay idle longer. |
+| **`space_cache=v2`** | Modern Free-Space Tracking | Improves performance and reduces mount times on modern NVMe drives. |
+
+To apply this, edit `/etc/fstab`, and replace your current mount options with the following (ensure `subvol=@` matches your setup):
+```
+UUID=your-uuid  /  btrfs  rw,noatime,compress=zstd:1,ssd,commit=120,space_cache=v2,subvol=@  0  0
+```
+
+> [!NOTE] the discard mount `flag discard=async` is intentionally omitted. Modern Linux setups prefer "Batch TRIM" via a systemd timer to prevent the constant background "chatter" of continuous discards.
+
+
+### 1. Maintenance
+
+To ensure the SSD performs maintenance efficiently, we use a weekly batch TRIM instead of continuous discards. To enable it, run:
+
+```
+sudo systemctl enable --now fstrim.timer
+```
+---
+
 ## ⚡ System & Power Optimization
 
 This section focuses on reducing the energy footprint of the software stack and maximizing the hardware efficiency of the Intel and networking components.
@@ -353,19 +388,23 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`loglevel=3`** | Error Suppression | Filters out non-critical kernel "noise" while keeping errors visible. |
 | **`rd.systemd.show_status=auto`** | Smart Service Status | Only shows systemd service logs if a service fails to start. |
 | **`rd.udev.log_priority=3`** | Udev Verbosity Control | Hides hardware initialization logs for a seamless boot transition. |
-| **`module_blacklist=tpm_tis,tpm_tis_core,tpm_crb`** | TPM Hard-Block | Completely bypasses TPM initialization, reclaiming ~2.3s of boot time. |
+| **`module_blacklist=tpm_tis,tpm_tis_core,tpm_crb`** | TPM Hard-Block | Completely bypasses TPM initialization, reclaiming ~2s of boot time. |
+| **`tpm.disable=1`** | TPM Kernel Killswitch | Disables the TPM subsystem at the core level to prevent hardware polling. |
 | **`8250.nr_uarts=0`** | Skip Serial Scan | Disables searching for non-existent legacy RS-232 serial ports. |
 | **`i915.modeset=1`** | Early KMS | Prevents screen "flashing" by initializing GPU before the login manager. |
-| **`i915.enable_fbc=1`** | Framebuffer Compression | Reduces memory bandwidth/power use by compressing video memory. |
-| **`i915.enable_psr=1`** | Panel Self Refresh | Stops GPU refresh cycles when the image is static (crucial for idle power). |
-| **`i915.psr_safest_params=1`** | PSR Stability Guard | Uses conservative timing to prevent flickering/freezing on 8th Gen panels. |
-| **`i915.enable_guc=2`** | HuC Firmware Auth | Enables hardware HEVC/VP9 decoding for cooler, longer video playback. |
-| **`pcie_aspm.policy=powersupersave`** | Aggressive PCIe Power | Forces NVMe, Wi-Fi, and LAN into deepest L1.2 sub-power states. |
-| **`transparent_hugepage=never`** | Disable Huge Pages | Optimizes RAM for ZRAM compression and stops `khugepaged` wakeups. |
+| **`i915.enable_fbc=1`** | Framebuffer Compression | Reduces memory bandwidth and power use by compressing video memory. |
+| **`i915.enable_psr=1`** | Panel Self Refresh | Stops GPU refresh cycles when the image is static (saves significant idle power). |
+| **`i915.psr_safest_params=1`** | PSR Stability Guard | Uses conservative timing to prevent flickering on 8th Gen laptop panels. |
+| **`i915.enable_guc=2`** | GuC/HuC Firmware | Enables hardware-level scheduling and HEVC/VP9 decoding for cooler video. |
+| **`pcie_aspm.policy=powersupersave`** | Aggressive PCIe Power | Forces NVMe, Wi-Fi, and LAN into deepest L1.2 low-power states. |
+| **`transparent_hugepage=never`** | Disable Huge Pages | Optimizes RAM for ZRAM compression and stops background memory wakeups. |
 | **`nvme_core.default_ps_max_latency_us=5500`** | NVMe Deep Sleep | Sets the latency "sweet spot" (5.5ms) for stable SSD power management. |
-| **`intel_idle.max_cstate=9`** | Force Deep C-States | Allows the CPU package to reach C9/C10 sleep states. |
+| **`intel_idle.max_cstate=9`** | Force Deep C-States | Allows the CPU package to reach the ultra-deep C9/C10 sleep states. |
 | **`processor.max_cstate=9`** | Processor Sleep Limit | Redundant guard to ensure the ACPI driver respects deep sleep limits. |
-| **`mei.enable=0`** | Intel ME Interface Disable | Prevents the Management Engine from "vetoing" deep Pkg C-states (C8-C10). |
+| **`mei.enable=0`** | Intel ME Interface Disable | Prevents the Management Engine from "vetoing" deep Package C-states. |
+| **`nmi_watchdog=0`** | Disable NMI Watchdog | Disables the periodic "heartbeat" interrupt, reducing CPU wakeups. |
+| **`mem_sleep_default=deep`** | S3 Deep Sleep | Ensures the laptop uses 'Deep' sleep instead of 'S2idle' (better battery). |
+| **`rootflags=subvol=@`** | Btrfs Root Subvolume | Mounts the OS subvolume directly; essential for reliable snapshot rollbacks. |
 
 > [!IMPORTANT]
 > **a)** Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
@@ -373,14 +412,14 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 > **b)** On some T480s panels (depending on whether you have the LG or Innolux display), **PSR** can occasionally cause a tiny "stutter" or flicker when moving the mouse after a pause.
 If you experience flickering, change the parameter to `i915.enable_psr=0`.
 > 
-> **c)** To enable **GuC/HuC** (`i915.enable_guc=3`), the `linux-firmware` package is required, to allow the GPU to handle its own power management and video decoding more efficiently.
+> **c)** To enable **GuC/HuC** (`i915.enable_guc=2`), the `linux-firmware` package is required, to allow the GPU to handle its own power management and video decoding more efficiently.
 
 To apply these changes, ensure your kernel command line is updated and you regenerate your initramfs:
 
 **a)** Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
   
 ```
-quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm.policy=powersupersave transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 processor.max_cstate=9 mei.enable=0
+quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm.policy=powersupersave transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 processor.max_cstate=9 mei.enable=0 rootflags=subvol=@
 ```
   
 **b)** Run the following command to rebuild the image and apply these new flags into the UKI.
