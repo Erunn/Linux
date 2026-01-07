@@ -483,7 +483,7 @@ sudo mkinitcpio -P
 This command provides detailed battery statistics (percentage, remaining time, and power draw in Watts) for use in status bars or custom widgets.
   
 ```
-sh -c 'BAT_SYS_PATH="/sys/class/power_supply/BAT0"; BAT_UPOWER_PATH="/org/freedesktop/UPower/devices/battery_BAT0"; watt=$(awk "{printf \" %.2f W\", \$1 / 1000000}" "$BAT_SYS_PATH/power_now"); perc=$(cat "$BAT_SYS_PATH/capacity")%; time=$(upower -i "$BAT_UPOWER_PATH" | awk "/time/ {print \" \"\$4, \$5}"); echo "|  $perc | $time | $watt |"'
+awk '{p=$1/1000000; getline < "/sys/class/power_supply/BAT0/energy_now"; e=$1/1000000; getline < "/sys/class/power_supply/BAT0/capacity"; c=$1} END {printf " %d%% |  %.1fh |  %.2f W\n", c, e/p, p}' /sys/class/power_supply/BAT0/power_now
 ```
 
 ---
