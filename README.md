@@ -397,6 +397,7 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`loglevel=3`** | Error Suppression | Filters out non-critical kernel "noise" while keeping errors visible. |
 | **`rd.systemd.show_status=auto`** | Smart Service Status | Only shows systemd service logs if a service fails to start. |
 | **`rd.udev.log_priority=3`** | Udev Verbosity Control | Hides hardware initialization logs for a seamless boot transition. |
+| **`libahci.ignore_sss=1`** | Skip Staggered Spin-up | Bypasses legacy SATA power-up delays; optimized for instant NVMe readiness. |
 | **`module_blacklist=tpm_tis,tpm_tis_core,tpm_crb`** | TPM Hard-Block | Completely bypasses TPM initialization, reclaiming ~2s of boot time. |
 | **`tpm.disable=1`** | TPM Kernel Killswitch | Disables the TPM subsystem at the core level to prevent hardware polling. |
 | **`8250.nr_uarts=0`** | Skip Serial Scan | Disables searching for non-existent legacy RS-232 serial ports. |
@@ -428,7 +429,7 @@ To apply these changes, ensure your kernel command line is updated and you regen
 **a)** Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
   
 ```
-quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm.policy=powersupersave transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 processor.max_cstate=9 mei.enable=0 rootflags=subvol=@
+quiet splash loglevel=3 libahci.ignore_sss=1 rd.systemd.show_status=auto rd.udev.log_priority=3 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm.policy=powersupersave transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 processor.max_cstate=9 mei.enable=0 rootflags=subvol=@
 ```
   
 **b)** Run the following command to rebuild the image and apply these new flags into the UKI.
