@@ -200,12 +200,20 @@ These settings reduce background disk noise and utilize Level 1 compression for 
 | **`commit=120`** | Delayed Write-Buffer | Groups writes every 120s, allowing the CPU to stay idle longer. |
 | **`space_cache=v2`** | Modern Free-Space Tracking | Improves performance and reduces mount times on modern NVMe drives. |
 
-To apply this, edit `/etc/fstab`, and replace your current mount options with the following (ensure `subvol=@` matches your setup):
+To apply this, edit `/etc/fstab`, and replace your current mount options with the following, so they look like the following example (for
 ```
-UUID=your-uuid  /  btrfs  rw,noatime,compress=zstd:1,ssd,commit=120,space_cache=v2,subvol=@  0  0
+# Btrfs Subvolumes (Optimized)
+UUID=your-uuid  /          btrfs  rw,noatime,compress=zstd:1,ssd,commit=120,subvol=@     0 0
+UUID=your-uuid  /home      btrfs  rw,noatime,compress=zstd:1,ssd,commit=120,subvol=@home 0 0
+
+# Boot Partition (Standard VFAT)
+UUID=boot-uuid  /boot      vfat   rw,noatime,fmask=0137,dmask=0027,utf8                  0 2
 ```
 
-> [!NOTE] the discard mount `flag discard=async` is intentionally omitted. Modern Linux setups prefer "Batch TRIM" via a systemd timer to prevent the constant background "chatter" of continuous discards.
+> [!NOTE]
+> **a)** The discard mount `flag discard=async` is intentionally omitted. Modern Linux setups prefer "Batch TRIM" via a systemd timer to prevent the constant background "chatter" of continuous discards.
+>
+> **b)** For Btrfs partitions with multiple subvolumes (e.g., @, @home, @log), you must apply the all optimization flags (compress, commit, noatime, etc.) to every single line that uses that UUID.For VFAT partitions, only apply the `noatime` flag.
 
 
 ### 1. Maintenance
