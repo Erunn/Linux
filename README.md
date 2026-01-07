@@ -336,6 +336,7 @@ systemd-pcrproduct.service \
 systemd-pcrphase.service \
 systemd-pcrphase-sysinit.service \
 systemd-pcrmachine.service \
+systemd-pcrnvdone.service \
 tpm2.target
 ```
 
