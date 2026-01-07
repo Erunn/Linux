@@ -346,7 +346,7 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`loglevel=3`** | Error Suppression | Filters out non-critical kernel "noise" while keeping errors visible. |
 | **`rd.systemd.show_status=auto`** | Smart Service Status | Only shows systemd service logs if a service fails to start. |
 | **`rd.udev.log_priority=3`** | Udev Verbosity Control | Hides hardware initialization logs for a seamless boot transition. |
-| **`module_blacklist=tpm_tis,tpm_tis_core`** | TPM Hard-Block | Reclaims ~2s of boot time by preventing faulty TPM polling. |
+| **`module_blacklist=tpm_tis,tpm_tis_core,tpm_crb`** | TPM Hard-Block | Completely bypasses TPM initialization, reclaiming ~2.3s of boot time. |
 | **`8250.nr_uarts=0`** | Skip Serial Scan | Disables searching for non-existent legacy RS-232 serial ports. |
 | **`i915.modeset=1`** | Early KMS | Prevents screen "flashing" by initializing GPU before the login manager. |
 | **`i915.enable_fbc=1`** | Framebuffer Compression | Reduces memory bandwidth/power use by compressing video memory. |
@@ -358,7 +358,7 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`nvme_core.default_ps_max_latency_us=5500`** | NVMe Deep Sleep | Sets the latency "sweet spot" (5.5ms) for stable SSD power management. |
 | **`intel_idle.max_cstate=9`** | Force Deep C-States | Allows the CPU package to reach C9/C10 sleep states. |
 | **`processor.max_cstate=9`** | Processor Sleep Limit | Redundant guard to ensure the ACPI driver respects deep sleep limits. |
-| **`mei.enable=0`** | Intel ME Interface Disable | Hard-disables the Management Engine interface, preventing it from "vetoing" deep Pkg C-states (C8-C10). |
+| **`mei.enable=0`** | Intel ME Interface Disable | Prevents the Management Engine from "vetoing" deep Pkg C-states (C8-C10). |
 
 > [!IMPORTANT]
 > **a)** Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
