@@ -226,8 +226,14 @@ wifi.iwd.autoconnect=yes
 After saving, and to prevent conflicts, disable the old `wpa_supplicant` service and enable the new `iwd` one:
 
 ```
-sudo systemctl disable --now wpa_supplicant.service
+sudo systemctl mask --now wpa_supplicant.service
 sudo systemctl enable --now iwd.service
+```
+
+Restart NetworkManager to apply changes:
+
+```
+sudo systemctl restart NetworkManager
 ```
 
 **iwd Cheat Sheet (iwctl)**
