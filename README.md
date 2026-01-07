@@ -252,13 +252,7 @@ Replacing `wpa_supplicant` with `iwd` results in faster connection times, lower 
 
 **Configure NetworkManager to use iwd:**
 
-To use `iwd` as the backend for **NetworkManager**, create this configuration file:
-
-```
-sudo nano /etc/NetworkManager/conf.d/wifi_backend.conf
-```
-
-and add the following lines:
+To use `iwd` as the backend for **NetworkManager**, create or edit `/etc/NetworkManager/conf.d/wifi_backend.conf` and add:
 
 ```
 [device]
@@ -266,17 +260,31 @@ wifi.backend=iwd
 wifi.iwd.autoconnect=yes
 ```
 
-After saving, and to prevent conflicts, disable the old `wpa_supplicant` service and enable the new `iwd` one:
+Edit `/etc/iwd/main.conf` as well, and add this:
+
+```
+[General]
+EnableNetworkConfiguration=true
+
+[Scan]
+DisablePeriodicScan=true
+
+[Power]
+PowerSave=true
+```
+
+To prevent conflicts, disable the old `wpa_supplicant` service and enable the new `iwd` one:
 
 ```
 sudo systemctl mask --now wpa_supplicant.service
 sudo systemctl enable --now iwd.service
 ```
 
-Restart NetworkManager to apply changes:
+Restart NetworkManager and iwd to apply changes:
 
 ```
 sudo systemctl restart NetworkManager
+sudo systemctl restart iwd
 ```
 
 **iwd Cheat Sheet (iwctl)**
