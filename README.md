@@ -457,7 +457,7 @@ The initramfs is the environment that loads hardware drivers. Using the systemd 
 Edit `/etc/mkinitcpio.conf` and edit the modules and hooks lines, to look like this:
 
 ```
-MODULES=(i915)  
+MODULES=(i915 btintel)  
 ```
 
 ```
