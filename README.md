@@ -416,7 +416,7 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`i915.enable_psr=1`** | Panel Self Refresh | Stops GPU refresh cycles when the image is static (saves significant idle power). |
 | **`i915.psr_safest_params=1`** | PSR Stability Guard | Uses conservative timing to prevent flickering on 8th Gen laptop panels. |
 | **`i915.enable_guc=2`** | GuC/HuC Firmware | Enables hardware-level scheduling and HEVC/VP9 decoding for cooler video. |
-| **`pcie_aspm.policy=powersupersave`** | Aggressive PCIe Power | Forces NVMe, Wi-Fi, and LAN into deepest L1.2 low-power states. |
+| **`pcie_aspm.policy=force`** | Aggressive PCIe Power | Forces NVMe, Wi-Fi, and LAN into deepest L1.2 low-power states. |
 | **`transparent_hugepage=never`** | Disable Huge Pages | Optimizes RAM for ZRAM compression and stops background memory wakeups. |
 | **`nvme_core.default_ps_max_latency_us=5500`** | NVMe Deep Sleep | Sets the latency "sweet spot" (5.5ms) for stable SSD power management. |
 | **`intel_idle.max_cstate=9`** | Force Deep C-States | Allows the CPU package to reach the ultra-deep C9/C10 sleep states. |
@@ -439,7 +439,7 @@ To apply these changes, ensure your kernel command line is updated and you regen
 **a)** Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
   
 ```
-quiet splash loglevel=3 libahci.ignore_sss=1 rd.systemd.show_status=auto rd.udev.log_priority=3 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm.policy=powersupersave transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 processor.max_cstate=9 mei.enable=0 rootflags=subvol=@
+quiet splash loglevel=3 libahci.ignore_sss=1 rd.systemd.show_status=auto rd.udev.log_priority=3 module_blacklist=tpm_tis,tpm_tis_core 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm.policy=force transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=9 processor.max_cstate=9 mei.enable=0 rootflags=subvol=@
 ```
   
 **b)** Run the following command to rebuild the image and apply these new flags into the UKI.
