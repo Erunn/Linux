@@ -365,15 +365,17 @@ sudo systemctl mask NetworkManager-wait-online.service
 sudo systemctl mask systemd-networkd-wait-online.service
 ```
 
-**Disable accessibility bus services (User level)**
+**User-Level Service Masking (Noise Reduction)**
 
-To reduce memory overhead and slight app-launch latency, accessibility bus services can be disabled.
+To minimize CPU wakeups and SSD metadata flushes, we mask these non-essential user services:
   
 ```
 systemctl --user mask at-spi-dbus-bus.service
 systemctl --user mask org.a11y.atspi.Registry.service
+systemctl --user mask gvfs-metadata.service
 systemctl --user stop at-spi-dbus-bus.service
 systemctl --user stop org.a11y.atspi.Registry.service
+systemctl --user stop gvfs-metadata.service
 ```
 
 **Bluetooth "Auto-On" Disable**
