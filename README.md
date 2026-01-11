@@ -486,7 +486,7 @@ sudo mkinitcpio -P
 This command provides detailed battery statistics (percentage, remaining time, and power draw in Watts) for use in status bars or custom widgets.
   
 ```
-awk '{v[NR]=$1} END {p=v[1]/1e6; en=v[2]/1e6; ef=v[3]/1e6; c=v[4]; s=v[5]; icon=(s=="Charging"?"":""); if(s=="Charging") {h=(p>0.1?(ef-en)/p:0); t_icon="󱐋"} else if(s=="Full") {h=0; t_icon="󰚥"} else {h=(p>0.1?en/p:0); t_icon=""}; printf "%s %d%% | %s %.1fh |  %.2f W\n", icon, c, t_icon, h, p}' /sys/class/power_supply/BAT0/{power_now,energy_now,energy_full,capacity,status}
+awk -F= '/ENERGY_NOW/{en=$2/1e6} /ENERGY_FULL_DESIGN|ENERGY_FULL/{ef=$2/1e6} /POWER_NOW/{p=$2/1e6} /CAPACITY=/{c=$2} /STATUS/{s=$2} END {icon=(s=="Charging"?"":""); if(s=="Charging") {h=(p>0.1?(ef-en)/p:0); t_icon="󱐋"} else if(s=="Full") {h=0; t_icon="󰚥"} else {h=(p>0.1?en/p:0); t_icon=""}; if(h>20)h=0; hr=int(h); min=int((h-hr)*60); if(s=="Full") t_val="Full"; else t_val=(hr>0?sprintf("%02dh %02dm",hr,min):sprintf("%02dm",min)); printf "%s %d%% | %s %s |  %.2f W\n", icon, c, t_icon, t_val, p}' /sys/class/power_supply/BAT0/uevent
 ```
 
 ---
