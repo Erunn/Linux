@@ -486,7 +486,7 @@ sudo mkinitcpio -P
 This command provides detailed battery statistics (percentage, remaining time, and power draw in Watts) for use in status bars or custom widgets.
   
 ```
-awk '{p=$1/1000000; getline < "/sys/class/power_supply/BAT0/energy_now"; e=$1/1000000; getline < "/sys/class/power_supply/BAT0/capacity"; c=$1} END {printf " %d%% |  %.1fh |  %.2f W\n", c, e/p, p}' /sys/class/power_supply/BAT0/power_now
+awk '{v[NR]=$1} END {p=v[1]/1e6; en=v[2]/1e6; ef=v[3]/1e6; c=v[4]; s=v[5]; icon=(s=="Charging"?"":""); if(s=="Charging") {h=(p>0.1?(ef-en)/p:0); t_icon="󱐋"} else if(s=="Full") {h=0; t_icon="󰚥"} else {h=(p>0.1?en/p:0); t_icon=""}; printf "%s %d%% | %s %.1fh |  %.2f W\n", icon, c, t_icon, h, p}' /sys/class/power_supply/BAT0/{power_now,energy_now,energy_full,capacity,status}
 ```
 
 ---
