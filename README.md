@@ -553,9 +553,7 @@ Use these commands to verify that your optimizations (ZRAM, Boot speed, etc.) ar
 Check and debug slow boot times:
   
 ```
-sudo systemd-analyze
-sudo systemd-analyze blame
-sudo systemd-analyze critical-chain
+echo "=== SUMMARY ==="; systemd-analyze; echo -e "\n=== FULL BLAME ==="; systemd-analyze blame --no-pager; echo -e "\n=== CRITICAL CHAIN ==="; systemd-analyze critical-chain --no-pager
 ```
   
 ### 2. Check for System Errors
@@ -563,10 +561,7 @@ sudo systemd-analyze critical-chain
 A quick way to check kernel health, power management status, and ZRAM compression in one go:
   
 ```
-echo "--- KERNEL ERRORS ---"; sudo journalctl -p 3 -xb --no-hostname --no-pager
-echo "--- POWER & VOLTAGE ---"; sudo journalctl -u tlp -u intel-undervolt -b
-echo "--- BTRFS HEALTH ---"; sudo journalctl -t btrfs -b
-echo "--- ZRAM STATUS ---"; zramctl
+echo "--- KERNEL ERRORS ---"; sudo journalctl -p 3 -xb --no-hostname --no-pager; echo -e "\n--- POWER & VOLTAGE ---"; sudo journalctl -u tlp -u intel-undervolt -b --no-pager; echo -e "\n--- BTRFS HEALTH ---"; sudo journalctl -t btrfs -b --no-pager; echo -e "\n--- ZRAM STATUS ---"; zramctl
 ```
   
 ### 3. Running Services and Timers
@@ -574,10 +569,7 @@ echo "--- ZRAM STATUS ---"; zramctl
 Monitor what is currently running to ensure no unnecessary background bloat has crept in:
   
 ```
-systemctl list-units --type=service --state=active
-systemctl --user list-units --type=service --state=active
-systemctl list-timers
-systemctl --failed
+echo "=== ACTIVE SYSTEM SERVICES ==="; systemctl list-units --type=service --state=active --no-pager; echo -e "\n=== ACTIVE USER SERVICES ==="; systemctl --user list-units --type=service --state=active --no-pager; echo -e "\n=== SYSTEM TIMERS ==="; systemctl list-timers --no-pager; echo -e "\n=== FAILED UNITS ==="; systemctl --failed --no-pager
 ```
 
 ---
