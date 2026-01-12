@@ -419,7 +419,7 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`i915.enable_guc=2`** | HuC Authentication | Offloads HEVC/VP9 video decoding to the GPU micro-engine. |
 | **`pcie_aspm=force`** | Aggressive PCIe Power | Forces NVMe, Wi-Fi, and LAN into deepest L1.2 low-power states. |
 | **`transparent_hugepage=never`** | Disable Huge Pages | Stops background memory compaction wakeups; better for ZRAM/Btrfs. |
-| **`nvme_core.default_ps_max_latency_us=5500`** | NVMe Deep Sleep | Sets the latency "sweet spot" (5.5ms) for stable SSD power saving. |
+| **`nvme_core.default_ps_max_latency_us=8000`** | NVMe Deep Sleep | Allows SSD to enter PS 4 (4mW) state (Specific to my drive's 8ms exit latency). |
 | **`intel_idle.max_cstate=10`** | Force Deep C-States | Unlocks the CPU's ability to reach ultra-deep C9/C10 sleep levels. |
 | **`mei.enable=0`** | Intel ME Interface Disable | Prevents the Management Engine from "vetoing" deep Package C-states. |
 | **`nmi_watchdog=0`** | Disable NMI Watchdog | Stops the periodic kernel "heartbeat" interrupt, reducing CPU wakeups. |
@@ -438,7 +438,7 @@ To apply these changes, ensure your kernel command line is updated and you regen
 **a)** Update `/etc/kernel/cmdline` (or your bootloader's equivalent), and add the following kernel parameters to the end of the file:
   
 ```
-quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm.disable=1 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm=force transparent_hugepage=never nvme_core.default_ps_max_latency_us=5500 intel_idle.max_cstate=10 mei.enable=0 nmi_watchdog=0 mem_sleep_default=deep
+quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm.disable=1 8250.nr_uarts=0 i915.modeset=1 i915.enable_fbc=1 i915.enable_psr=1 i915.psr_safest_params=1 i915.enable_guc=2 pcie_aspm=force transparent_hugepage=never nvme_core.default_ps_max_latency_us=8000 intel_idle.max_cstate=10 mei.enable=0 nmi_watchdog=0 mem_sleep_default=deep
 ```
   
 **b)** Run the following command to rebuild the image and apply these new flags into the UKI.
