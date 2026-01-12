@@ -311,9 +311,9 @@ Edit `/etc/intel-undervolt.conf`, and change the values:
 
 ```
 undervolt 0 'CPU' -90
-undervolt 1 'GPU' -50
+undervolt 1 'GPU' -60
 undervolt 2 'CPU Cache' -90
-undervolt 3 'System Agent' 0
+undervolt 3 'System Agent' -60
 undervolt 4 'Analog I/O' 0
 ```
 
@@ -488,7 +488,7 @@ sudo mkinitcpio -P
 This command provides detailed battery statistics (percentage, remaining time, and power draw in Watts) for use in status bars or custom widgets.
   
 ```
-awk -F= '/ENERGY_NOW/{en=$2/1e6} /ENERGY_FULL_DESIGN|ENERGY_FULL/{ef=$2/1e6} /POWER_NOW/{p=$2/1e6} /CAPACITY=/{c=$2} /STATUS/{s=$2} END {icon=(s=="Charging"?"":""); if(s=="Charging") {h=(p>0.1?(ef-en)/p:0); t_icon="󱐋"} else if(s=="Full") {h=0; t_icon="󰚥"} else {h=(p>0.1?en/p:0); t_icon=""}; if(h>20)h=0; hr=int(h); min=int((h-hr)*60); if(s=="Full") t_val="Full"; else t_val=(hr>0?sprintf("%02dh %02dm",hr,min):sprintf("%02dm",min)); printf "%s %d%% | %s %s |  %.2f W\n", icon, c, t_icon, t_val, p}' /sys/class/power_supply/BAT0/uevent
+awk -F= '/ENERGY_NOW/{en=$2/1e6} /ENERGY_FULL_DESIGN|ENERGY_FULL/{ef=$2/1e6} /POWER_NOW/{p=$2/1e6} /CAPACITY=/{c=$2} /STATUS/{s=$2} END {icon=(s=="Charging"?"":""); t_icon=""; if(s=="Charging") {h=(p>0.1?(ef-en)/p:0)} else if(s=="Full") {h=0} else {h=(p>0.1?en/p:0)}; if(h>20)h=0; hr=int(h); min=int((h-hr)*60); if(s=="Full") t_val="Full"; else t_val=(hr>0?sprintf("%02dh %02dm",hr,min):sprintf("%02dm",min)); printf "%s %d%% | %s %s |  %.2f W\n", icon, c, t_icon, t_val, p}' /sys/class/power_supply/BAT0/uevent
 ```
 
 ---
@@ -500,9 +500,9 @@ To maintain the "Minimalist" nature of this build, these maintenance tasks ensur
 ### 1. Full System Update & Cleanup
 This comprehensive one-liner handles the entire maintenance cycle: it updates the system, removes "orphaned" packages (dependencies no longer needed), and clears the package cache.
 
- ```
- sudo pacman -Sc --noconfirm && yay -Syu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
- ```
+```
+sudo pacman -Sc --noconfirm && yay -Syu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
+```
 
 ### 2. Enable SSD TRIM
   
