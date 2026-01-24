@@ -598,4 +598,13 @@ To enable multilib:
 
     Save and run: sudo pacman -Syu
 
+    # 1. Install the missing headers
+sudo pacman -S linux-headers
+
+# 2. Trigger the driver build manually (this might take a minute)
+sudo dkms autoinstall
+
+# 3. Now run your mkinitcpio command again
+sudo mkinitcpio -P
+
     
