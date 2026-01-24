@@ -575,3 +575,13 @@ echo "=== ACTIVE SYSTEM SERVICES ==="; systemctl list-units --type=service --sta
 ```
 
 ---
+
+# Example line in /etc/mkinitcpio.conf
+MODULES=(i915 nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+
+echo "blacklist nouveau" | sudo tee /etc/modprobe.d/blacklist-nouveau.conf
+
+sudo pacman -S nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings egl-wayland
+
+# Example line in /etc/mkinitcpio.conf
+MODULES=(i915 nvidia nvidia_modeset nvidia_uvm nvidia_drm)
