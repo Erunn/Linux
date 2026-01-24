@@ -607,4 +607,7 @@ sudo dkms autoinstall
 # 3. Now run your mkinitcpio command again
 sudo mkinitcpio -P
 
-    
+cmd line
+
+nvidia-drm.modeset=1
+
