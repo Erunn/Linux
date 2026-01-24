@@ -585,3 +585,17 @@ sudo pacman -S nvidia-dkms nvidia-utils lib32-nvidia-utils nvidia-settings egl-w
 
 # Example line in /etc/mkinitcpio.conf
 MODULES=(i915 nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+
+To enable multilib:
+
+    sudo featherpad /etc/pacman.conf
+
+    Find the lines for [multilib] and uncomment them (remove the #):
+    Code snippet
+
+    [multilib]
+    Include = /etc/pacman.d/mirrorlist
+
+    Save and run: sudo pacman -Syu
+
+    
