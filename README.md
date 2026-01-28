@@ -576,6 +576,20 @@ echo "=== ACTIVE SYSTEM SERVICES ==="; systemctl list-units --type=service --sta
 
 ---
 
+## 🎮 Gaming & eGPU Optimization
+
+This section focuses on enabling high-performance gaming via a Thunderbolt 3 eGPU (Nvidia) while maintaining the system's stability and low power consumption when on the move. The configuration uses a **Hybrid Graphics** approach: the Intel iGPU handles the lightweight Wayland desktop, while the Nvidia eGPU is summoned only for heavy 3D workloads.
+
+### 1. Enable 32-bit Support (Multilib)
+
+Steam and many Wine/Proton games rely on 32-bit libraries. You must enable the `multilib` repository before installing drivers.
+
+Edit `/etc/pacman.conf`:
+
+
+
+
+
 # Example line in /etc/mkinitcpio.conf
 MODULES=(i915 nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 
