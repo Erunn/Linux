@@ -310,9 +310,9 @@ Lowering the voltage on the i5-8250U reduces heat and prevents thermal throttlin
 Edit `/etc/intel-undervolt.conf`, and change the values:
 
 ```
-undervolt 0 'CPU' -90
+undervolt 0 'CPU' -95
 undervolt 1 'GPU' -60
-undervolt 2 'CPU Cache' -90
+undervolt 2 'CPU Cache' -95
 undervolt 3 'System Agent' -60
 undervolt 4 'Analog I/O' 0
 ```
@@ -338,16 +338,12 @@ Masking these services prevents systemd from waiting for the TPM 2.0 chip to ini
 
 ```
 sudo systemctl mask \
-systemd-tpm2-setup-early.service \
-systemd-tpm2-setup.service \
-systemd-pcrproduct.service \
 systemd-pcrphase.service \
 systemd-pcrphase-sysinit.service \
+systemd-pcrphase-initrd.service \
+systemd-pcrproduct.service \
 systemd-pcrmachine.service \
-systemd-pcrnvdone.service \
-dev-tpm0.device \
-dev-tpmrm0.device \
-tpm2.target
+systemd-pcrnvdone.service
 ```
 
 > [!IMPORTANT]
