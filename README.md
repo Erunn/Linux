@@ -28,6 +28,7 @@ This repository serves as a comprehensive guide for configuring a high-performan
 6. [🖥️ User Experience & Boot](#-user-experience--boot)
 7. [💻 System Maintenance](#-system-maintenance)
 8. [🔍 Analysis & Debugging](#-analysis--debugging)
+9. [🎮 Gaming & eGPU Optimization](#-gaming--egpu-optimization)
 
 ---
   
@@ -199,7 +200,7 @@ These settings reduce background disk noise and utilize Level 1 compression for 
 | **`commit=120`** | Delayed Write-Buffer | Groups writes every 120s, allowing the CPU to stay idle longer. |
 | **`space_cache=v2`** | Modern Free-Space Tracking | Improves performance and reduces mount times on modern NVMe drives. |
 
-To apply this, edit `/etc/fstab`, and replace your current mount options with the following, so they look like the following example (for
+To apply this, edit `/etc/fstab` so your mount options look like the following example:
 ```
 # Btrfs Subvolumes (Optimized)
 UUID=your-uuid  /          btrfs  rw,noatime,compress=zstd:1,ssd,commit=120,space_cache=v2,subvol=@     0 0
@@ -230,6 +231,14 @@ sudo systemctl enable --now fstrim.timer
 ```
 sudo systemctl status fstrim.timer
 ```
+
+### 3. Enable Btrfs Data Scrubbing
+Btrfs can detect and repair silent data corruption (bit-rot). We enable a systemd timer to check the health of the root filesystem once a month in the background.
+
+```
+sudo systemctl enable --now btrfs-scrub@-.timer
+```
+
 ---
 
 ## ⚡ System & Power Optimization
@@ -488,7 +497,7 @@ Regenerate the image:
 sudo mkinitcpio -P
 ```
 
-### 3.TPM2 Auto-Unlock (Secure & Fast Boot)
+### 3. TPM2 Auto-Unlock (Secure & Fast Boot)
 
 By default, full disk encryption (LUKS) requires you to type a password every time you turn on the laptop. By binding your decryption key to the ThinkPad's hardware TPM 2.0 chip, we can achieve a "MacBook/BitLocker-style" instant boot: the drive unlocks automatically, booting straight to the Wayland login screen in under 10 seconds.
 
@@ -551,7 +560,7 @@ To maintain the "Minimalist" nature of this build, these maintenance tasks ensur
 This comprehensive one-liner handles the entire maintenance cycle: it updates the system, removes "orphaned" packages (dependencies no longer needed), and clears the package cache.
 
 ```
-sudo pacman -Sc --noconfirm && yay -Syu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
+yay -Syu && yay -Yc --noconfirm && yay -Sc --noconfirm
 ```
 
 ### 2. Taming the Journal Size
@@ -571,7 +580,7 @@ SystemMaxUse=100M
 MaxRetentionSec=2week
 ```
   
-### 4. Cleaning Up Redundant Packages
+### 3. Cleaning Up Redundant Packages
   
 Uninstall legacy or heavyweight utilities to keep the system optimized for the Wayland/LXQt stack:
 
