@@ -488,7 +488,52 @@ Regenerate the image:
 sudo mkinitcpio -P
 ```
 
-### 3. Custom Command Widget - Battery Stats
+### 3.TPM2 Auto-Unlock (Secure & Fast Boot)
+
+By default, full disk encryption (LUKS) requires you to type a password every time you turn on the laptop. By binding your decryption key to the ThinkPad's hardware TPM 2.0 chip, we can achieve a "MacBook/BitLocker-style" instant boot: the drive unlocks automatically, booting straight to the Wayland login screen in under 10 seconds.
+
+### 🎯 The Threat Model
+
+* **The Stolen SSD:** If a thief removes your NVMe drive and plugs it into another computer, it remains locked. The decryption key is physically baked into your specific T480s motherboard.
+* **The "Evil Maid" Attack:** The TPM chip actively measures your boot process (BIOS, Secure Boot state). If someone tampers with your kernel or tries to boot a hacker USB stick, the TPM detects the change, refuses to unlock the drive, and forces a manual password prompt.
+
+### 1. Enroll the TPM2 Chip
+
+First, identify your encrypted LUKS partition (usually `/dev/nvme0n1p2` on a standard Arch install) by running:
+
+```
+lsblk
+```
+
+Next, run systemd-cryptenroll to bind the drive to the TPM chip (replace /dev/nvme0n1p2 if your partition path differs):
+
+```
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0,7 /dev/nvme0n1p2
+```
+
+You will be prompted to enter your current LUKS password once to authorize the new TPM token.
+
+To confirm the TPM was successfully added to your LUKS header, dump the configuration:
+
+```
+sudo cryptsetup luksDump /dev/nvme0n1p2
+```
+
+Look under the `Tokens:` section at the bottom of the output. You should see a systemd-tpm2 token occupying a new keyslot. On your next reboot, the password prompt will flash for a fraction of a second before the TPM injects the key automatically.
+
+> [!WARNING]
+> **CRITICAL: BIOS Updates & Hardware Changes**
+> 
+> Because we bound the TPM to **PCR 0**, updating your ThinkPad's BIOS/Firmware will change the system measurements. 
+> 
+> **This is expected behavior.** On the first boot after a BIOS update, the TPM will refuse to unlock the drive. You must type your standard LUKS password to boot into Arch, and then run the following commands to wipe the old TPM token and record the new BIOS measurements:
+> 
+> ```
+> sudo systemd-cryptenroll --wipe-slot=tpm2 /dev/nvme0n1p2
+> sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0,7 /dev/nvme0n1p2
+> ```
+
+### 4. Custom Command Widget - Battery Stats
 
 This command provides detailed battery statistics (percentage, remaining time, and power draw in Watts) for use in status bars or custom widgets.
   
