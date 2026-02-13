@@ -75,7 +75,6 @@ Use `yay` to install the essential packages, grouped by their function:
 | **labwc** | Minimalist window-stacking **Wayland compositor** (core of the desktop). | `yay -S labwc` |
 | **labwc-tweaks** | Qt-based GUI configuration tool for managing `labwc` settings and themes. | `yay -S labwc-tweaks-git` |
 | **lxqt-wayland-session** | Provides necessary files to launch the LXQt session under Wayland. | `yay -S lxqt-wayland-session` |
-| **qt5-declarative** | Development files for **Qt 5's QML/declarative framework**. | `yay -S qt5-declarative` |
   
 #### 🖥️ Display & Output Control
   
@@ -203,8 +202,8 @@ These settings reduce background disk noise and utilize Level 1 compression for 
 To apply this, edit `/etc/fstab`, and replace your current mount options with the following, so they look like the following example (for
 ```
 # Btrfs Subvolumes (Optimized)
-UUID=your-uuid  /          btrfs  rw,noatime,compress=zstd:1,ssd,commit=120,subvol=@     0 0
-UUID=your-uuid  /home      btrfs  rw,noatime,compress=zstd:1,ssd,commit=120,subvol=@home 0 0
+UUID=your-uuid  /          btrfs  rw,noatime,compress=zstd:1,ssd,commit=120,space_cache=v2,subvol=@     0 0
+UUID=your-uuid  /home      btrfs  rw,noatime,compress=zstd:1,ssd,commit=120,space_cache=v2,subvol=@home 0 0
 
 # Boot Partition (Standard VFAT)
 UUID=boot-uuid  /boot      vfat   rw,noatime,fmask=0137,dmask=0027,utf8                  0 2
@@ -216,12 +215,20 @@ UUID=boot-uuid  /boot      vfat   rw,noatime,fmask=0137,dmask=0027,utf8         
 > **b)** For Btrfs partitions with multiple subvolumes (e.g., @, @home, @log), you must apply the all optimization flags (compress, commit, noatime, etc.) to every single line that uses that UUID.For VFAT partitions, only apply the `noatime` flag.
 
 
-### 1. Maintenance
+### 2. Enable SSD TRIM
+  
+Since this build uses an NVMe SSD with Btrfs, regular TRIM operations are essential to maintain write speeds and drive longevity. We use the systemd timer to handle this weekly.
 
-To ensure the SSD performs maintenance efficiently, we use a weekly batch TRIM instead of continuous discards. To enable it, run:
+**Enable the weekly TRIM service:** 
 
 ```
 sudo systemctl enable --now fstrim.timer
+```
+
+**Check status to ensure it is scheduled:**
+  
+```
+sudo systemctl status fstrim.timer
 ```
 ---
 
@@ -346,12 +353,6 @@ systemd-pcrmachine.service \
 systemd-pcrnvdone.service
 ```
 
-> [!IMPORTANT]
-> **TPM & Measured Boot Masking**
-> The masking of `systemd-pcr*` and `systemd-tpm2*` services is intended for systems **not using LUKS encryption** or TPM-based disk unlocking. On this specific build, these are disabled to eliminate the 5+ second software delay caused by the system waiting for the TPM chip to initialize and measure the boot stages. 
-> 
-> *If you plan to use TPM-based full disk encryption in the future, these services must remain unmasked.*
-
 **Disable delays caused by Network waiting**
   
 By default, some systems wait for a confirmed internet connection before reaching the login manager. Disabling this service allows the desktop to load while Wi-Fi connects in the background.
@@ -400,13 +401,13 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
   
 | Parameter | Function | Benefit |
 | :--- | :--- | :--- |
+| **`rd.luks.name=UUID=root`** | Systemd LUKS Unlock | Tells sd-encrypt which encrypted drive to unlock. Replaces the legacy cryptdevice parameter. |
 | **`quiet`** | Minimal Boot Verbosity | Removes the "wall of text" during startup for a cleaner look. |
 | **`splash`** | Boot Splash Support | Allows the use of a graphical boot logo (BGRT). |
 | **`loglevel=3`** | Error Suppression | Filters out non-critical kernel "noise" while keeping errors visible. |
 | **`rd.systemd.show_status=auto`** | Smart Service Status | Only shows systemd service logs if a service fails to start. |
 | **`rd.udev.log_priority=3`** | Udev Verbosity Control | Hides hardware initialization logs for a seamless boot transition. |
 | **`zswap.enabled=0`** | Disable Zswap | Prevents kernel-level swap compression (Optimized for ZRAM setups). |
-| **`tpm.disable=1`** | TPM Kernel Killswitch | Disables the TPM subsystem to prevent background hardware polling. |
 | **`8250.nr_uarts=0`** | Skip Serial Scan | Disables searching for non-existent legacy RS-232 serial ports. |
 | **`i915.modeset=1`** | Early KMS | Prevents screen "flashing" by initializing GPU before the login manager. |
 | **`i915.enable_fbc=1`** | Framebuffer Compression | Reduces memory bandwidth and power by compressing video memory. |
@@ -423,13 +424,19 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`nmi_watchdog=0`** | Disable NMI Watchdog | Stops the periodic kernel "heartbeat" interrupt, reducing CPU wakeups. |
 | **`mem_sleep_default=deep`** | S3 Deep Sleep | Forces traditional S3 'Deep' sleep instead of Modern Standby (S2idle). |
 
+> [!WARNING]
+
+> CRITICAL: LUKS Encryption & sd-encrypt
+> When using the modern sd-encrypt hook, you must use rd.luks.name=YOUR-UUID=root instead of the legacy cryptdevice= format.
+
+> Make sure you use the LUKS UUID (found via lsblk -f), NOT the PARTUUID, or the system will time out and fail to boot.
+
 > [!IMPORTANT]
-> **a)** Blacklisting TPM drivers is recommended for systems using standard Btrfs partitions without LUKS encryption. If you plan to use TPM-based disk unlocking in the future, remove all the TPM entries.
 > 
-> **b)** On some T480s panels (depending on whether you have the LG or Innolux display), **PSR** can occasionally cause a tiny "stutter" or flicker when moving the mouse after a pause.
+> **a)** On some T480s panels (depending on whether you have the LG or Innolux display), **PSR** can occasionally cause a tiny "stutter" or flicker when moving the mouse after a pause.
 If you experience flickering, change the parameter to `i915.enable_psr=0`.
 > 
-> **c)** To enable **GuC/HuC** (`i915.enable_guc=2`), the `linux-firmware` package is required, to allow the GPU to handle its own power management and video decoding more efficiently.
+> **b)** To enable **GuC/HuC** (`i915.enable_guc=2`), the `linux-firmware` package is required, to allow the GPU to handle its own power management and video decoding more efficiently.
 
 To apply these changes, ensure your kernel command line is updated and you regenerate your initramfs:
 
@@ -444,6 +451,7 @@ quiet splash loglevel=3 rd.systemd.show_status=auto rd.udev.log_priority=3 tpm.d
 ```
 sudo mkinitcpio -P
 ```
+
 ### 2. Initramfs Configuration
 
 The initramfs is the environment that loads hardware drivers. Using the systemd hook allows for faster, parallelized initialization compared to the legacy base hook.
@@ -457,6 +465,7 @@ The initramfs is the environment that loads hardware drivers. Using the systemd 
 | **`kms`** | Graphics Setup | Enables Early Kernel Mode Setting for a flicker-free transition to the GUI. |
 | **`keyboard`** | Input Support | Ensures the laptop keyboard works during the very early stages of boot. |
 | **`sd-vconsole`** | Virtual Console | Sets the correct system font and keyboard layout for the terminal. |
+| **`sd-encrypt`** | LUKS Decryption  | Critical: Unlocks the encrypted drive. Integrates with systemd for faster parallel booting, clean password prompts, and native TPM2 auto-unlock support. |
 | **`block`** | Storage Drivers | Provides the necessary drivers to communicate with the NVMe SSD. |
 | **`filesystems`** | FS Support | Allows the kernel to mount and read the **Btrfs** root partition. |
 
@@ -470,7 +479,7 @@ MODULES=(i915)
 ```
 
 ```
-HOOKS=(microcode systemd autodetect modconf kms keyboard sd-vconsole block filesystems)
+HOOKS=(microcode systemd autodetect modconf kms keyboard sd-vconsole block sd-encrypt filesystems)
 ```
 
 Regenerate the image:
@@ -500,22 +509,7 @@ This comprehensive one-liner handles the entire maintenance cycle: it updates th
 sudo pacman -Sc --noconfirm && yay -Syu --noconfirm && yay -Yc --noconfirm && yay -Sc --noconfirm
 ```
 
-### 2. Enable SSD TRIM
-  
-Since this build uses an NVMe SSD with Btrfs, regular TRIM operations are essential to maintain write speeds and drive longevity. We use the systemd timer to handle this weekly.
-
-**Enable the weekly TRIM service:** 
-
-```
-sudo systemctl enable --now fstrim.timer
-```
-**Check status to ensure it is scheduled:**
-  
-```
-sudo systemctl status fstrim.timer
-```
-
-### 3. Taming the Journal Size
+### 2. Taming the Journal Size
   
 By default, systemd logs can grow to several gigabytes. For a minimal setup, we limit the journal to a small footprint and a 2-week history.
 
