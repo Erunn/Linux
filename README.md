@@ -431,6 +431,7 @@ The Linux kernel’s behavior at startup is governed by boot-time parameters. Fo
 | **`mei.enable=0`** | Intel ME Interface Disable | Prevents the Management Engine from "vetoing" deep Package C-states. |
 | **`nmi_watchdog=0`** | Disable NMI Watchdog | Stops the periodic kernel "heartbeat" interrupt, reducing CPU wakeups. |
 | **`mem_sleep_default=deep`** | S3 Deep Sleep | Forces traditional S3 'Deep' sleep instead of Modern Standby (S2idle). |
+| **`systemd.tpm2_wait=false`** | Async TPM Initialization | Tells the system not to block the boot process while waiting for the TPM chip to "check in." |
 
 > [!WARNING]
 
@@ -541,7 +542,25 @@ Look under the `Tokens:` section at the bottom of the output. You should see a s
 > sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0,7 /dev/nvme0n1p2
 > ```
 
-### 4. Custom Command Widget - Battery Stats
+### 4. Zero-Delay Bootloader**
+By default, the bootloader waits several seconds for user input. We can set this to zero for an instant boot. 
+
+Edit your systemd-boot configuration:
+
+```
+sudo nano /boot/loader/loader.conf
+```
+
+and modify the file to look like this:
+
+
+```
+timeout 0
+#console-mode keep
+
+```
+
+### 5. Custom Command Widget - Battery Stats
 
 This command provides detailed battery statistics (percentage, remaining time, and power draw in Watts) for use in status bars or custom widgets.
   
