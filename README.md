@@ -578,7 +578,7 @@ To maintain the "Minimalist" nature of this build, these maintenance tasks ensur
 This comprehensive one-liner handles the entire maintenance cycle: it updates the system, removes "orphaned" packages (dependencies no longer needed), and clears the package cache.
 
 ```
-yay -Syu && yay -Yc --noconfirm && yay -Sc --noconfirm
+yay -Syu && yay -Yc --noconfirm && yay -Sc --noconfirm && sudo rm -f /var/cache/pacman/pkg/download-*
 ```
 
 ### 2. Taming the Journal Size
