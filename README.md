@@ -488,7 +488,7 @@ MODULES=(i915)
 ```
 
 ```
-HOOKS=(microcode systemd autodetect modconf kms keyboard sd-vconsole block sd-encrypt filesystems)
+HOOKS=(base systemd autodetect microcode modconf kms sd-vconsole keyboard block sd-encrypt filesystems
 ```
 
 Regenerate the image:
